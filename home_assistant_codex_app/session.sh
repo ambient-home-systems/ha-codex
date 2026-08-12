@@ -56,12 +56,20 @@ fi
 CODEX_ARGS=(--config "${HA_CODEX_CONFIG_OVERRIDE}")
 
 # Home Assistant OS does not allow the nested unprivileged user namespace that
-# Codex's Bubblewrap sandbox needs for apply_patch. The add-on is already the
-# security boundary: it has no host, Docker, or Supervisor-management access.
-# Use that container boundary for normal patches while leaving Codex's command
-# approval policy untouched. The setting remains available for troubleshooting.
+# Codex's Bubblewrap sandbox needs. Without it, apply_patch fails while reading
+# the target file ("bwrap: Failed to make / slave: Permission denied") because
+# its filesystem-verification helper runs under Bubblewrap. The add-on is
+# already the security boundary: it has no host, Docker, or Supervisor-management
+# access. Start Codex in full-access so patches use that container boundary
+# instead of Bubblewrap, while leaving Codex's command approval policy untouched.
+#
+# This applies only to a newly started session. Codex keeps the sandbox mode it
+# launched with, so a session that started before this mode was enabled, or one
+# switched with /approvals, stays in workspace-write until Codex restarts. When
+# that happens, restart the add-on or choose Full Access in /approvals.
+# The setting remains available for troubleshooting.
 if [ "${HA_CODEX_PATCH_COMPATIBILITY_MODE:-true}" = "true" ]; then
-  CODEX_ARGS+=(--config 'sandbox_mode="danger-full-access"')
+  CODEX_ARGS+=(--sandbox danger-full-access)
 fi
 
 CODEX_ARGS+=(--model "${MODEL}")

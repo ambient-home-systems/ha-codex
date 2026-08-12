@@ -2,6 +2,13 @@
 
 All notable changes to HA Codex are documented here.
 
+## 1.2.2
+
+- Clarified that Patch compatibility mode's full-access sandbox is applied when a Codex session starts, so a persistent session that began before the mode was enabled (or one changed with `/approvals`) can still hit the `bwrap: Failed to make / slave: Permission denied` error until the add-on is restarted.
+- Added start-up logging that states the effective Codex sandbox mode and reminds you to restart the add-on after changing it.
+- Documented how to recover a session stuck in `workspace-write`: choose Full Access in `/approvals`, or restart the add-on with Patch compatibility mode enabled.
+- Started new sessions with Codex's `--sandbox danger-full-access` flag for the full-access patch path.
+
 ## 1.2.1
 
 - Removed browser-callback sign-in, which cannot reliably return to an isolated Home Assistant add-on container from a user's browser at `localhost`.

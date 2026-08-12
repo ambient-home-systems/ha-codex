@@ -112,6 +112,32 @@ normal patches work without host, Docker, or Supervisor-management access. It
 does not change Codex's command-approval behavior. Disable it only when
 diagnosing a sandbox-related issue.
 
+The sandbox mode is fixed when a Codex session **starts**. Because Session
+persistence keeps one Codex session running in the background, enabling Patch
+compatibility mode only takes effect once a fresh session starts. After changing
+the setting, **restart the HA Codex add-on** (not just navigate away and back).
+
+If `apply_patch` reports:
+
+```text
+apply patch verification failed: Failed to read file to update ...: fs sandbox
+helper failed with status exit status: 1: bwrap: Failed to make / slave:
+Permission denied
+```
+
+then the current Codex session is running in `workspace-write` instead of
+`danger-full-access`, so it is still trying to use Bubblewrap. Recover in one of
+two ways:
+
+- Inside Codex, run `/approvals` (or `/status` to confirm the mode) and choose
+  **Full Access**. This switches the running session immediately.
+- Or restart the HA Codex add-on with Patch compatibility mode enabled, then
+  confirm the session reports `danger-full-access`.
+
+This most often happens when a session that started before Patch compatibility
+mode was enabled is kept alive by Session persistence, or when the mode was
+changed with `/approvals` during the session.
+
 ### Home Assistant control actions
 
 No separate API key, token, IP address, or host setup is needed. To allow

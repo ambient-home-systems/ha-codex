@@ -43,7 +43,12 @@ bashio::log.info "Starting HA Codex."
 bashio::log.info "Using Codex model: ${MODEL}."
 bashio::log.info "Terminal history mode: ${TERMINAL_MODE}."
 bashio::log.info "First-time sign-in uses the HA Codex device-code method by default."
-bashio::log.info "Patch compatibility mode: ${PATCH_COMPATIBILITY_MODE}."
+if [ "${PATCH_COMPATIBILITY_MODE}" = "true" ]; then
+  bashio::log.info "Patch compatibility mode: true (new Codex sessions start with sandbox danger-full-access)."
+else
+  bashio::log.info "Patch compatibility mode: false (Codex uses its Bubblewrap sandbox, which apply_patch cannot use on Home Assistant OS)."
+fi
+bashio::log.info "Sandbox mode applies when a Codex session starts; restart the add-on after changing it so a fresh session takes effect."
 bashio::log.info "Home Assistant control actions: ${HOME_ASSISTANT_CONTROL}; Core restart: ${ALLOW_HOME_ASSISTANT_RESTART}."
 
 # ttyd bundles its browser client in its executable.  Extract its matching
