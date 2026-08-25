@@ -2,3 +2,4 @@ build_from:
   amd64: ghcr.io/home-assistant/amd64-base:3.22
 args:
   TTYD_VERSION: "1.7.7"
+  TRZSZ_VERSION: "1.2.0"

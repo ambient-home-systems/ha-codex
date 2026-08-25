@@ -2,6 +2,11 @@
 
 All notable changes to HA Codex are documented here.
 
+## 1.2.3
+
+- Added terminal file transfer: run `trz` to attach (upload) a file from your device into the workspace, and `tsz <file>` to download one, using the terminal's built-in `trzsz` support and a browser file picker.
+- Bundled the `trzsz` binaries in the add-on image and documented the attach/download workflow in the README.
+
 ## 1.2.2
 
 - Clarified that Patch compatibility mode's full-access sandbox is applied when a Codex session starts, so a persistent session that began before the mode was enabled (or one changed with `/approvals`) can still hit the `bwrap: Failed to make / slave: Permission denied` error until the add-on is restarted.

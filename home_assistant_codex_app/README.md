@@ -20,6 +20,7 @@ configuration directory.
 - Review and edit YAML, dashboards, automations, scripts, packages, and custom components.
 - Run local commands such as `git diff`, `rg`, and Home Assistant configuration checks available in the container.
 - Keep a Codex session alive while you leave and return to the Home Assistant sidebar.
+- Attach files from your device with `trz`, and download files back with `tsz`.
 
 It deliberately does **not** request host networking, Docker access, full host
 access, or Supervisor-management API access. Optional Home Assistant control
@@ -153,6 +154,26 @@ the action and request command approval first. The helper cannot control the
 host, Docker, Supervisor, updates, shutdown, or arbitrary Home Assistant
 services. Refresh the browser after dashboard changes; reloading Lovelace
 resources does not reload dashboard YAML or storage configuration by itself.
+
+## Attach files to the terminal
+
+You can move files between your device and the workspace directly in the
+terminal, so Codex can read something you send it (a log, a YAML snippet, a
+screenshot) or hand you a file back. This uses `trzsz`, which the terminal's
+built-in file-transfer support turns into a browser file picker — no extra
+add-on or share is needed.
+
+- **Upload (attach) a file:** run `trz` in the terminal. Your browser opens a
+  file picker; the file is saved into the current directory. Because HA Codex
+  starts in `/homeassistant`, an attached file lands there by default, ready to
+  reference in Codex (for example, "read `error.log` and tell me what's
+  wrong"). To attach into another folder, `cd` there first.
+- **Download a file:** run `tsz <file>` (for example `tsz configuration.yaml`)
+  and your browser downloads it.
+
+This works in the Home Assistant sidebar and with persistent sessions. Very
+large files transfer more slowly over the browser connection; for many files at
+once, attach a `.zip` and unzip it in the terminal.
 
 ## Safe workflow
 
