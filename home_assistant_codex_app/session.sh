@@ -53,6 +53,14 @@ if ! codex login status >/dev/null 2>&1; then
   done
 fi
 
+# Remind users how to move files in and out of the terminal. Printed once before
+# Codex starts; in inline mode it stays visible in the scrollback above Codex.
+if [ -n "${TMUX:-}" ]; then
+  printf '%s\n\n' 'Attach a file: press Ctrl-b then u for an upload picker (or run "trz" in a shell). Download: "tsz <file>". You can also drag a file onto a shell prompt.'
+else
+  printf '%s\n\n' 'Attach a file: run "trz" in the shell to upload; "tsz <file>" to download. You can also drag a file onto the shell prompt.'
+fi
+
 CODEX_ARGS=(--config "${HA_CODEX_CONFIG_OVERRIDE}")
 
 # Home Assistant OS does not allow the nested unprivileged user namespace that

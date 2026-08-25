@@ -157,23 +157,32 @@ resources does not reload dashboard YAML or storage configuration by itself.
 
 ## Attach files to the terminal
 
-You can move files between your device and the workspace directly in the
-terminal, so Codex can read something you send it (a log, a YAML snippet, a
-screenshot) or hand you a file back. This uses `trzsz`, which the terminal's
-built-in file-transfer support turns into a browser file picker — no extra
-add-on or share is needed.
+You can move files between your device and the workspace, so Codex can read
+something you send it (a log, a YAML snippet, a screenshot) or hand you a file
+back. This uses `trzsz`, which the terminal turns into a browser file picker —
+no extra add-on or share is needed.
 
-- **Upload (attach) a file:** run `trz` in the terminal. Your browser opens a
-  file picker; the file is saved into the current directory. Because HA Codex
-  starts in `/homeassistant`, an attached file lands there by default, ready to
-  reference in Codex (for example, "read `error.log` and tell me what's
-  wrong"). To attach into another folder, `cd` there first.
-- **Download a file:** run `tsz <file>` (for example `tsz configuration.yaml`)
-  and your browser downloads it.
+The terminal normally shows Codex itself, not a shell prompt, so `trz`/`tsz`
+are run from a shell. The quickest way is the built-in shortcut:
 
-This works in the Home Assistant sidebar and with persistent sessions. Very
-large files transfer more slowly over the browser connection; for many files at
-once, attach a `.zip` and unzip it in the terminal.
+- **Attach (upload) a file — the easy way:** press **Ctrl-b** then **u**. A
+  short-lived shell opens and runs `trz` for you, so your browser shows a file
+  picker. The file is saved into `/homeassistant`, and the window returns to
+  Codex when the upload finishes. Then reference it in Codex, for example
+  "read `error.log` and tell me what's wrong".
+- **Attach from a shell yourself:** open a shell tab with **Ctrl-b** then **c**,
+  run `trz`, then return to Codex with **Ctrl-b** then **0**. `cd` first to
+  upload into a different folder. At a shell prompt you can also **drag a file
+  onto the terminal** to start the upload.
+- **Download a file:** in a shell, run `tsz <file>` (for example
+  `tsz configuration.yaml`) and your browser downloads it.
+
+Very large files transfer more slowly over the browser connection; for many
+files at once, attach a `.zip` and unzip it in the terminal.
+
+If the file picker never appears, your browser may be blocking file dialogs on
+an insecure origin — open Home Assistant over HTTPS (for example through Nabu
+Casa remote access) and try again.
 
 ## Safe workflow
 

@@ -72,6 +72,10 @@ else
   bashio::log.warning "Could not locate ttyd's browser client; using ttyd's standard page."
 fi
 
+# enableZmodem/enableTrzsz turn on ttyd's browser-side file transfer; without
+# them the installed trz/tsz binaries never receive the client handshake, so an
+# upload just hangs. trzszDragInitTimeout allows dragging a file onto the
+# terminal to start an upload.
 exec /usr/local/bin/ttyd \
   --writable \
   --port 7681 \
@@ -79,5 +83,8 @@ exec /usr/local/bin/ttyd \
   --client-option "fontSize=${FONT_SIZE}" \
   --client-option "scrollback=${SCROLLBACK}" \
   --client-option "theme=${THEME}" \
+  --client-option "enableZmodem=true" \
+  --client-option "enableTrzsz=true" \
+  --client-option "trzszDragInitTimeout=5000" \
   "${TTYD_INDEX_ARGS[@]}" \
   bash -lc "${COMMAND}"

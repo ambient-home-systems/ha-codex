@@ -2,6 +2,13 @@
 
 All notable changes to HA Codex are documented here.
 
+## 1.2.4
+
+- Enabled ttyd's `trzsz`/zmodem browser file transfer (`enableTrzsz`/`enableZmodem`), which 1.2.3 shipped the binaries for but never turned on — so `trz`/`tsz` now actually open a browser file picker instead of hanging.
+- Added a one-key attach shortcut: press Ctrl-b then u to open an upload picker and drop the file into `/homeassistant` without leaving Codex.
+- Enabled drag-and-drop upload onto a shell prompt, and added a start-up hint showing how to attach and download files.
+- Documented that transfers run from a shell (not the Codex prompt) and that some browsers require HTTPS for the file picker.
+
 ## 1.2.3
 
 - Added terminal file transfer: run `trz` to attach (upload) a file from your device into the workspace, and `tsz <file>` to download one, using the terminal's built-in `trzsz` support and a browser file picker.
