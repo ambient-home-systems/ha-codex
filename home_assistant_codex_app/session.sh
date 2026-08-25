@@ -53,12 +53,15 @@ if ! codex login status >/dev/null 2>&1; then
   done
 fi
 
-# Remind users how to move files in and out of the terminal. Printed once before
-# Codex starts; in inline mode it stays visible in the scrollback above Codex.
-if [ -n "${TMUX:-}" ]; then
-  printf '%s\n\n' 'Attach a file: press Ctrl-b then u for an upload picker (or run "trz" in a shell). Download: "tsz <file>". You can also drag a file onto a shell prompt.'
-else
-  printf '%s\n\n' 'Attach a file: run "trz" in the shell to upload; "tsz <file>" to download. You can also drag a file onto the shell prompt.'
+# When terminal file transfer is enabled, remind users how to move files in and
+# out. Printed once before Codex starts; in inline mode it stays visible in the
+# scrollback above Codex. Skipped when the feature is off so it is not misleading.
+if [ "${HA_CODEX_FILE_TRANSFER:-false}" = "true" ]; then
+  if [ -n "${TMUX:-}" ]; then
+    printf '%s\n\n' 'Attach a file: press Ctrl-b then u for an upload picker (or run "trz" in a shell). Download: "tsz <file>". You can also drag a file onto a shell prompt.'
+  else
+    printf '%s\n\n' 'Attach a file: run "trz" in the shell to upload; "tsz <file>" to download. You can also drag a file onto the shell prompt.'
+  fi
 fi
 
 CODEX_ARGS=(--config "${HA_CODEX_CONFIG_OVERRIDE}")

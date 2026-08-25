@@ -20,7 +20,7 @@ configuration directory.
 - Review and edit YAML, dashboards, automations, scripts, packages, and custom components.
 - Run local commands such as `git diff`, `rg`, and Home Assistant configuration checks available in the container.
 - Keep a Codex session alive while you leave and return to the Home Assistant sidebar.
-- Attach files from your device with `trz`, and download files back with `tsz`.
+- Attach files from your device with `trz`, and download files back with `tsz` (enable **Terminal file transfer** first).
 
 It deliberately does **not** request host networking, Docker access, full host
 access, or Supervisor-management API access. Optional Home Assistant control
@@ -91,6 +91,7 @@ Codex.
 | **Session persistence** | On | Keeps the active Codex session running when you leave HA Codex for another Home Assistant page, then reconnects it when you return. |
 | **Preserve terminal history** | On | Keeps the visible browser scrollbar and long inline transcript while the active session persists in the background. Recommended. |
 | **Patch compatibility mode** | On | Lets Codex use normal patches on Home Assistant OS, avoiding the nested Bubblewrap restriction that otherwise forces a shell-edit fallback. Command approval behavior is unchanged. |
+| **Terminal file transfer** | Off | Enables `trz`/`tsz` file transfer so you can attach files to the terminal. Off by default because it can interfere with pasting long text. Turn it on only when you need to move files. |
 | **Allow Home Assistant control actions** | Off | Enables HA Codex's restricted configuration check and reload helper. |
 | **Allow Home Assistant Core restart** | Off | Allows the helper to restart Core after a successful configuration check. Requires control actions to be enabled. |
 
@@ -161,6 +162,12 @@ You can move files between your device and the workspace, so Codex can read
 something you send it (a log, a YAML snippet, a screenshot) or hand you a file
 back. This uses `trzsz`, which the terminal turns into a browser file picker —
 no extra add-on or share is needed.
+
+**First enable it:** turn on **Terminal file transfer** in the add-on's
+Configuration tab and restart HA Codex. It is off by default because it routes
+terminal input through a paste/drag handler that can interfere with pasting long
+text; leave it off unless you are moving files, and turn it back off afterward
+if you paste large prompts often.
 
 The terminal normally shows Codex itself, not a shell prompt, so `trz`/`tsz`
 are run from a shell. The quickest way is the built-in shortcut:

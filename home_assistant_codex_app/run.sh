@@ -13,12 +13,14 @@ THEME="$(bashio::config 'terminal_theme')"
 PERSIST="$(bashio::config 'session_persistence')"
 PRESERVE_HISTORY="$(bashio::config 'preserve_terminal_history')"
 PATCH_COMPATIBILITY_MODE="$(bashio::config 'patch_compatibility_mode')"
+FILE_TRANSFER="$(bashio::config 'file_transfer')"
 MODEL="$(bashio::config 'model')"
 HOME_ASSISTANT_CONTROL="$(bashio::config 'home_assistant_control')"
 ALLOW_HOME_ASSISTANT_RESTART="$(bashio::config 'allow_home_assistant_restart')"
 export HA_CODEX_HOME_ASSISTANT_CONTROL="${HOME_ASSISTANT_CONTROL}"
 export HA_CODEX_ALLOW_HOME_ASSISTANT_RESTART="${ALLOW_HOME_ASSISTANT_RESTART}"
 export HA_CODEX_PATCH_COMPATIBILITY_MODE="${PATCH_COMPATIBILITY_MODE}"
+export HA_CODEX_FILE_TRANSFER="${FILE_TRANSFER}"
 
 TERMINAL_MODE="fullscreen"
 if [ "${PRESERVE_HISTORY}" = "true" ]; then
@@ -50,6 +52,11 @@ else
 fi
 bashio::log.info "Sandbox mode applies when a Codex session starts; restart the add-on after changing it so a fresh session takes effect."
 bashio::log.info "Home Assistant control actions: ${HOME_ASSISTANT_CONTROL}; Core restart: ${ALLOW_HOME_ASSISTANT_RESTART}."
+if [ "${FILE_TRANSFER}" = "true" ]; then
+  bashio::log.info "Terminal file transfer: true (trz/tsz enabled; may interfere with pasting long text)."
+else
+  bashio::log.info "Terminal file transfer: false (default; pasting long text is unaffected)."
+fi
 
 # ttyd bundles its browser client in its executable.  Extract its matching
 # page, then add one deliberately small scroll rail.  The sed replacement
@@ -72,10 +79,20 @@ else
   bashio::log.warning "Could not locate ttyd's browser client; using ttyd's standard page."
 fi
 
-# enableZmodem/enableTrzsz turn on ttyd's browser-side file transfer; without
-# them the installed trz/tsz binaries never receive the client handshake, so an
-# upload just hangs. trzszDragInitTimeout allows dragging a file onto the
-# terminal to start an upload.
+# enableZmodem/enableTrzsz turn on ttyd's browser-side file transfer so the
+# installed trz/tsz binaries receive the client handshake. This is opt-in
+# because enabling trzsz routes terminal input through its paste/drag handler,
+# which interferes with pasting long text. It stays off unless the user turns on
+# the "Terminal file transfer" setting, so pasting works by default.
+TTYD_TRANSFER_ARGS=()
+if [ "${FILE_TRANSFER}" = "true" ]; then
+  TTYD_TRANSFER_ARGS=(
+    --client-option "enableZmodem=true"
+    --client-option "enableTrzsz=true"
+    --client-option "trzszDragInitTimeout=1500"
+  )
+fi
+
 exec /usr/local/bin/ttyd \
   --writable \
   --port 7681 \
@@ -83,8 +100,6 @@ exec /usr/local/bin/ttyd \
   --client-option "fontSize=${FONT_SIZE}" \
   --client-option "scrollback=${SCROLLBACK}" \
   --client-option "theme=${THEME}" \
-  --client-option "enableZmodem=true" \
-  --client-option "enableTrzsz=true" \
-  --client-option "trzszDragInitTimeout=5000" \
+  "${TTYD_TRANSFER_ARGS[@]}" \
   "${TTYD_INDEX_ARGS[@]}" \
   bash -lc "${COMMAND}"

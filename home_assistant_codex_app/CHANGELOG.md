@@ -2,6 +2,12 @@
 
 All notable changes to HA Codex are documented here.
 
+## 1.2.5
+
+- Fixed pasting long text, which 1.2.4 broke by enabling trzsz: its browser client routes terminal input through a paste/drag handler that mangles large pastes.
+- Made terminal file transfer an opt-in **Terminal file transfer** setting, off by default, so pasting works normally out of the box.
+- When the setting is on, `trz`/`tsz`, the Ctrl-b u shortcut, drag-and-drop, and the start-up hint work as before; when off, none of the transfer client options are enabled.
+
 ## 1.2.4
 
 - Enabled ttyd's `trzsz`/zmodem browser file transfer (`enableTrzsz`/`enableZmodem`), which 1.2.3 shipped the binaries for but never turned on — so `trz`/`tsz` now actually open a browser file picker instead of hanging.
