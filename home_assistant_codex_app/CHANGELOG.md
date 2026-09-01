@@ -2,6 +2,11 @@
 
 All notable changes to HA Codex are documented here.
 
+## 1.2.6
+
+- Updated the add-on base image from Alpine 3.22 to 3.23.
+- Pinned Codex to a specific release (0.152.0) instead of always installing the latest, so a future Codex change cannot silently alter the add-on's behavior. Bump `CODEX_VERSION` in `build.yaml` to update Codex.
+
 ## 1.2.5
 
 - Fixed pasting long text, which 1.2.4 broke by enabling trzsz: its browser client routes terminal input through a paste/drag handler that mangles large pastes.
