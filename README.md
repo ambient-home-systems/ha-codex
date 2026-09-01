@@ -46,6 +46,7 @@ allowlisted helper.
 ## Install
 
 [![Add HA Codex repository to Home Assistant](https://my.home-assistant.io/badges/supervisor.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fambient-home-systems%2Fha-codex)
+[![Latest release](https://img.shields.io/github/v/release/ambient-home-systems/ha-codex?label=version&sort=semver)](https://github.com/ambient-home-systems/ha-codex/releases/latest)
 
 1. Select the button above to open your Home Assistant instance with the HA
    Codex repository URL pre-filled, then add the repository.
@@ -216,7 +217,7 @@ normal Codex operation is not blocked by the fallback sandbox message.
 Every release has three matching records:
 
 - The add-on version in `home_assistant_codex_app/config.yaml`.
-- User-facing Home Assistant update notes in `home_assistant_codex_app/CHANGELOG.md`.
+- User-facing Home Assistant update notes in the [changelog](home_assistant_codex_app/CHANGELOG.md).
 - A tagged [GitHub Release](https://github.com/ambient-home-systems/ha-codex/releases).
 
 Use the App Store to install updates. Open the update details before
