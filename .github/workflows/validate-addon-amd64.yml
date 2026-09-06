@@ -1,0 +1,89 @@
+name: HA Codex amd64 image validation
+
+on:
+  pull_request:
+    paths:
+      - "home_assistant_codex_app/**"
+      - ".github/workflows/validate-addon-amd64.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-smoke-test:
+    name: Build and smoke-test amd64 add-on
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Build pinned amd64 add-on image
+        run: |
+          docker build \
+            --platform linux/amd64 \
+            --build-arg BUILD_FROM=ghcr.io/home-assistant/amd64-base:3.23 \
+            --build-arg TTYD_VERSION=1.7.7 \
+            --build-arg TRZSZ_VERSION=1.2.0 \
+            --build-arg CODEX_VERSION=0.152.0 \
+            --tag ha-codex:pr-${{ github.event.pull_request.number || github.run_id }} \
+            home_assistant_codex_app
+
+      - name: Verify runtime dependencies
+        run: |
+          image="ha-codex:pr-${{ github.event.pull_request.number || github.run_id }}"
+          docker run --rm --entrypoint /bin/sh "$image" -ec '
+            command -v codex
+            test -x /usr/local/bin/codex
+            test "$(codex --version)" = "codex-cli 0.152.0"
+            command -v codex-code-mode-host
+            test -x /usr/local/bin/codex-code-mode-host
+            codex-code-mode-host --help
+            command -v node
+            node --version
+            if command -v npm >/dev/null 2>&1; then
+              echo "npm must not be installed" >&2
+              exit 1
+            fi
+          '
+
+      - name: Verify image metadata
+        run: |
+          image="ha-codex:pr-${{ github.event.pull_request.number || github.run_id }}"
+          test "$(docker image inspect "$image" --format '{{.Config.WorkingDir}}')" = "/homeassistant"
+          test "$(docker image inspect "$image" --format '{{json .Config.Cmd}}')" = '["/run.sh"]'
+          docker image inspect "$image" --format '{{json .Config.Healthcheck.Test}}' |
+            grep -F 'http://127.0.0.1:7681/'
+
+      - name: Start add-on entry point and wait for health check
+        run: |
+          image="ha-codex:pr-${{ github.event.pull_request.number || github.run_id }}"
+          options_file="$RUNNER_TEMP/ha-codex-options.json"
+          printf '%s\n' '{"model":"gpt-5.6-terra","terminal_font_size":14,"terminal_scrollback":5000,"terminal_theme":"dark","session_persistence":true,"preserve_terminal_history":true,"patch_compatibility_mode":true,"file_transfer":false,"home_assistant_control":false,"allow_home_assistant_restart":false}' > "$options_file"
+
+          docker run --detach \
+            --name ha-codex-runtime-smoke \
+            --volume "$options_file:/data/options.json:ro" \
+            "$image"
+
+          for attempt in $(seq 1 24); do
+            status="$(docker inspect ha-codex-runtime-smoke --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}missing{{end}}')"
+            if [ "$status" = "healthy" ]; then
+              break
+            fi
+            if [ "$status" = "unhealthy" ] || [ "$(docker inspect ha-codex-runtime-smoke --format '{{.State.Running}}')" != "true" ]; then
+              docker logs ha-codex-runtime-smoke
+              exit 1
+            fi
+            sleep 5
+          done
+
+          test "$(docker inspect ha-codex-runtime-smoke --format '{{.State.Health.Status}}')" = "healthy"
+          docker logs ha-codex-runtime-smoke
+          test -x /run.sh
+
+      - name: Clean up runtime container
+        if: always()
+        run: docker rm --force ha-codex-runtime-smoke 2>/dev/null || true
