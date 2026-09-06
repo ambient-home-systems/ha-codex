@@ -24,6 +24,7 @@ RUN apk add --no-cache \
       grep \
       gzip \
       jq \
+      nodejs \
       ripgrep \
       tar \
       tmux \
@@ -41,7 +42,20 @@ RUN apk add --no-cache \
   && tar -xzf /tmp/codex.tar.gz -C /tmp/codex \
   && install -m 0755 "$(find /tmp/codex -type f -name 'codex*' ! -name '*.sigstore' | head -n 1)" /usr/local/bin/codex \
   && rm -rf /tmp/codex /tmp/codex.tar.gz \
-  && codex --version
+  && curl -fsSL "https://github.com/openai/codex/releases/download/rust-v${CODEX_VERSION}/codex-code-mode-host-x86_64-unknown-linux-musl.tar.gz" -o /tmp/codex-code-mode-host.tar.gz \
+  && mkdir -p /tmp/codex-code-mode-host \
+  && tar -xzf /tmp/codex-code-mode-host.tar.gz -C /tmp/codex-code-mode-host \
+  && set -- $(find /tmp/codex-code-mode-host -type f -perm /111 -name 'codex-code-mode-host*' \
+      ! -name '*.sigstore' ! -name '*.sha256' ! -name '*.checksum'); \
+     [ "$#" -eq 1 ] \
+  && install -m 0755 "$1" /usr/local/bin/codex-code-mode-host \
+  && rm -rf /tmp/codex-code-mode-host /tmp/codex-code-mode-host.tar.gz \
+  && codex --version \
+  && command -v codex-code-mode-host \
+  && test -x /usr/local/bin/codex-code-mode-host \
+  && codex-code-mode-host --help \
+  && command -v node \
+  && node --version
 
 COPY run.sh /run.sh
 COPY session.sh /usr/local/bin/ha-codex-session

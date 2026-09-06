@@ -2,6 +2,12 @@
 
 All notable changes to HA Codex are documented here.
 
+## 1.2.8
+
+- Included the version-matched `codex-code-mode-host`, fixing local workspace and image-inspection tools that failed because the host executable was absent.
+- Added Node.js so Node-based plugin MCP servers, including `dataAnalyticsWidgets`, can start. npm is not installed because these servers use the bundled runtime files directly.
+- Cloudflare MCP authentication remains a separate, optional, user-configured action; HA Codex does not authenticate it automatically.
+
 ## 1.2.7
 
 - Added a latest-release version badge to the READMEs and linked the changelog from both. Documentation only; no functional changes.
