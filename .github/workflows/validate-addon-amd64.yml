@@ -24,15 +24,21 @@ jobs:
         id: build_config
         run: |
           build_file="home_assistant_codex_app/build.yaml"
-          echo "build_from=$(sed -n 's/^  amd64: //p' "$build_file")" >> "$GITHUB_OUTPUT"
-          echo "ttyd_version=$(sed -n 's/^  TTYD_VERSION: "\\(.*\\)"/\\1/p' "$build_file")" >> "$GITHUB_OUTPUT"
-          echo "trzsz_version=$(sed -n 's/^  TRZSZ_VERSION: "\\(.*\\)"/\\1/p' "$build_file")" >> "$GITHUB_OUTPUT"
-          echo "codex_version=$(sed -n 's/^  CODEX_VERSION: "\\(.*\\)"/\\1/p' "$build_file")" >> "$GITHUB_OUTPUT"
+          build_from="$(awk '$1 == "amd64:" {print $2}' "$build_file")"
+          ttyd_version="$(awk '$1 == "TTYD_VERSION:" {gsub(/"/, "", $2); print $2}' "$build_file")"
+          trzsz_version="$(awk '$1 == "TRZSZ_VERSION:" {gsub(/"/, "", $2); print $2}' "$build_file")"
+          codex_version="$(awk '$1 == "CODEX_VERSION:" {gsub(/"/, "", $2); print $2}' "$build_file")"
 
-          test -n "$(sed -n 's/^  amd64: //p' "$build_file")"
-          test -n "$(sed -n 's/^  TTYD_VERSION: "\\(.*\\)"/\\1/p' "$build_file")"
-          test -n "$(sed -n 's/^  TRZSZ_VERSION: "\\(.*\\)"/\\1/p' "$build_file")"
-          test -n "$(sed -n 's/^  CODEX_VERSION: "\\(.*\\)"/\\1/p' "$build_file")"
+          for value in "$build_from" "$ttyd_version" "$trzsz_version" "$codex_version"; do
+            test -n "$value"
+          done
+
+          {
+            echo "build_from=$build_from"
+            echo "ttyd_version=$ttyd_version"
+            echo "trzsz_version=$trzsz_version"
+            echo "codex_version=$codex_version"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Build pinned amd64 add-on image
         run: |
@@ -50,7 +56,7 @@ jobs:
           EXPECTED_CODEX_VERSION: ${{ steps.build_config.outputs.codex_version }}
         run: |
           image="ha-codex:pr-${{ github.event.pull_request.number || github.run_id }}"
-          docker run --rm --entrypoint /bin/sh "$image" -ec '
+          docker run --rm --env EXPECTED_CODEX_VERSION --entrypoint /bin/sh "$image" -ec '
             command -v codex
             test -x /usr/local/bin/codex
             test "$(codex --version)" = "codex-cli ${EXPECTED_CODEX_VERSION}"
