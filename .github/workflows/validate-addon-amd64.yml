@@ -82,7 +82,7 @@ jobs:
 
           test "$(docker inspect ha-codex-runtime-smoke --format '{{.State.Health.Status}}')" = "healthy"
           docker logs ha-codex-runtime-smoke
-          test -x /run.sh
+          docker run --rm --entrypoint /bin/sh "$image" -ec 'test -x /run.sh'
 
       - name: Clean up runtime container
         if: always()
