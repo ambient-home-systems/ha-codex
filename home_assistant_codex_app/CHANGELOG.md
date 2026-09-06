@@ -2,6 +2,12 @@
 
 All notable changes to HA Codex are documented here.
 
+## 1.2.9
+
+- Added `gpt-6-astra` to the model selector. Availability depends on the user's ChatGPT plan, workspace settings, and rollout eligibility.
+- Removed `gpt-5.4` and `gpt-5.4-mini` from the selector because they retired from Codex with ChatGPT sign-in; use `gpt-5.6-terra` and `gpt-5.6-luna` respectively.
+- Kept `gpt-5.6-terra` as the default model for broad compatibility.
+
 ## 1.2.8
 
 - Included the version-matched `codex-code-mode-host`, fixing local workspace and image-inspection tools that failed because the host executable was absent.
