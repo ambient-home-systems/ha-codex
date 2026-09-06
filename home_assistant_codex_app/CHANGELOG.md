@@ -2,6 +2,12 @@
 
 All notable changes to HA Codex are documented here.
 
+## 1.2.10
+
+- Updated the pinned Codex CLI from 0.152.0 to 0.153.4, including the version-matched `codex-code-mode-host` artifact.
+- Included Codex's Astra model-picker visibility fix and updated Astra tool guidance while keeping `gpt-5.6-terra` as the HA Codex default.
+- Updated amd64 validation to read its image base and dependency versions directly from `build.yaml`, preventing the test workflow from drifting from the release pin.
+
 ## 1.2.9
 
 - Added `gpt-6-astra` to the model selector. Availability depends on the user's ChatGPT plan, workspace settings, and rollout eligibility.

@@ -20,24 +20,46 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Read pinned build configuration
+        id: build_config
+        run: |
+          build_file="home_assistant_codex_app/build.yaml"
+          build_from="$(awk '$1 == "amd64:" {print $2}' "$build_file")"
+          ttyd_version="$(awk '$1 == "TTYD_VERSION:" {gsub(/"/, "", $2); print $2}' "$build_file")"
+          trzsz_version="$(awk '$1 == "TRZSZ_VERSION:" {gsub(/"/, "", $2); print $2}' "$build_file")"
+          codex_version="$(awk '$1 == "CODEX_VERSION:" {gsub(/"/, "", $2); print $2}' "$build_file")"
+
+          for value in "$build_from" "$ttyd_version" "$trzsz_version" "$codex_version"; do
+            test -n "$value"
+          done
+
+          {
+            echo "build_from=$build_from"
+            echo "ttyd_version=$ttyd_version"
+            echo "trzsz_version=$trzsz_version"
+            echo "codex_version=$codex_version"
+          } >> "$GITHUB_OUTPUT"
+
       - name: Build pinned amd64 add-on image
         run: |
           docker build \
             --platform linux/amd64 \
-            --build-arg BUILD_FROM=ghcr.io/home-assistant/amd64-base:3.23 \
-            --build-arg TTYD_VERSION=1.7.7 \
-            --build-arg TRZSZ_VERSION=1.2.0 \
-            --build-arg CODEX_VERSION=0.152.0 \
+            --build-arg BUILD_FROM=${{ steps.build_config.outputs.build_from }} \
+            --build-arg TTYD_VERSION=${{ steps.build_config.outputs.ttyd_version }} \
+            --build-arg TRZSZ_VERSION=${{ steps.build_config.outputs.trzsz_version }} \
+            --build-arg CODEX_VERSION=${{ steps.build_config.outputs.codex_version }} \
             --tag ha-codex:pr-${{ github.event.pull_request.number || github.run_id }} \
             home_assistant_codex_app
 
       - name: Verify runtime dependencies
+        env:
+          EXPECTED_CODEX_VERSION: ${{ steps.build_config.outputs.codex_version }}
         run: |
           image="ha-codex:pr-${{ github.event.pull_request.number || github.run_id }}"
-          docker run --rm --entrypoint /bin/sh "$image" -ec '
+          docker run --rm --env EXPECTED_CODEX_VERSION --entrypoint /bin/sh "$image" -ec '
             command -v codex
             test -x /usr/local/bin/codex
-            test "$(codex --version)" = "codex-cli 0.152.0"
+            test "$(codex --version)" = "codex-cli ${EXPECTED_CODEX_VERSION}"
             command -v codex-code-mode-host
             test -x /usr/local/bin/codex-code-mode-host
             codex-code-mode-host --help
