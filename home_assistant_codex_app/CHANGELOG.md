@@ -2,6 +2,11 @@
 
 All notable changes to HA Codex are documented here.
 
+## 1.2.12
+
+- Enabled Option+drag text selection in the browser terminal on macOS (`macOptionClickForcesSelection`), so Mac users can copy terminal text to the clipboard while tmux owns the mouse, matching the existing Shift+drag behavior on Windows and Linux.
+- Documented how to copy and paste inside the terminal on Windows and macOS, including why Ctrl+C interrupts Codex instead of copying and why plain Ctrl+V does not paste.
+
 ## 1.2.11
 
 - Updated the pinned Codex CLI from 0.153.4 to 0.154.0, including the version-matched `codex-code-mode-host` artifact.

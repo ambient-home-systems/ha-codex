@@ -159,6 +159,29 @@ host, Docker, Supervisor, updates, shutdown, or arbitrary Home Assistant
 services. Refresh the browser after dashboard changes; reloading Lovelace
 resources does not reload dashboard YAML or storage configuration by itself.
 
+## Copy and paste in the terminal
+
+The browser terminal does not follow every desktop-terminal clipboard habit.
+**Ctrl+C is not copy**: Codex receives it as an interrupt that cancels the
+current turn, and a second press quits Codex. The persistent session also runs
+inside tmux, which owns the mouse so scrolling can move through history, so a
+plain drag highlights text only for tmux's internal buffer rather than your
+clipboard.
+
+- **Windows (also Linux and ChromeOS):** hold **Shift** while dragging to
+  select. The selection is copied automatically and a small ✂ icon flashes;
+  **Ctrl+Insert** also copies it. Paste with **Ctrl+Shift+V** or
+  **Shift+Insert**. Plain **Ctrl+V** is passed to Codex as a control keystroke
+  and does not paste.
+- **macOS:** hold **Option ⌥** while dragging to select. The selection is
+  copied automatically; **Cmd+C** also copies it. Paste with **Cmd+V**.
+- **Reuse output inside Codex:** drag without holding a key (tmux copies it to
+  its own buffer), then press **Ctrl-b** followed by **]** to paste it at the
+  Codex prompt.
+
+A multi-line paste arrives as one message; press **Enter** to send it. If long
+pastes arrive garbled, make sure **Terminal file transfer** is off.
+
 ## Attach files to the terminal
 
 You can move files between your device and the workspace, so Codex can read
