@@ -2,6 +2,14 @@
 
 All notable changes to HA Codex are documented here.
 
+## 1.2.11
+
+- Updated the pinned Codex CLI from 0.153.4 to 0.154.0, including the version-matched `codex-code-mode-host` artifact.
+- Picked up Codex's inline questions, so a question can be answered while Codex keeps working without losing an in-progress draft, plus Vim replace mode with undo and improved Escape handling in the terminal editor.
+- Picked up Codex fixes for plugin tool refresh, MCP OAuth coordination, workspace trust verification, permission preservation when resuming or forking a session, and conversation resumption conflicts.
+- Note: Codex removed the `codex mcp-server` command in this release. HA Codex never invoked it, so add-on behavior is unchanged, but any personal script that called it needs updating.
+- `gpt-5.6-terra` remains the HA Codex default and the model selector is unchanged.
+
 ## 1.2.10
 
 - Updated the pinned Codex CLI from 0.152.0 to 0.153.4, including the version-matched `codex-code-mode-host` artifact.
