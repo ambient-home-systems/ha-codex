@@ -93,10 +93,15 @@ if [ "${FILE_TRANSFER}" = "true" ]; then
   )
 fi
 
+# tmux (and Codex) take over the mouse, so a plain drag never creates a browser
+# selection. xterm.js lets Shift+drag force one everywhere, but on macOS the
+# equivalent Option+drag is off unless this option is set. The README's copy and
+# paste instructions rely on it.
 exec /usr/local/bin/ttyd \
   --writable \
   --port 7681 \
   --terminal-type xterm-256color \
+  --client-option "macOptionClickForcesSelection=true" \
   --client-option "fontSize=${FONT_SIZE}" \
   --client-option "scrollback=${SCROLLBACK}" \
   --client-option "theme=${THEME}" \

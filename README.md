@@ -175,6 +175,51 @@ add-on container boundary instead, so normal patches work without host, Docker,
 or Supervisor-management access. It does not change Codex's command-approval
 behavior. Turn it off only when diagnosing a sandbox-related issue.
 
+## Copy and paste in the terminal
+
+HA Codex runs in a browser terminal, so the clipboard habits from a desktop
+terminal app do not all carry over. Two things catch most people:
+
+- **Ctrl+C is not copy.** The terminal sends it to Codex as an interrupt: it
+  cancels the current turn, and a second press quits Codex. Copy with the
+  shortcuts below instead.
+- **Hold a key while you drag to select.** The persistent session runs inside
+  tmux, which takes over the mouse so wheel and trackpad scrolling can move
+  through history. A plain drag therefore produces a tmux highlight that only
+  reaches tmux's internal buffer, not your clipboard. Hold **Shift** (Windows)
+  or **Option ⌥** (Mac) while dragging to make a normal browser selection. The
+  terminal copies that selection to your clipboard automatically and briefly
+  flashes a small ✂ icon to confirm.
+
+### Windows
+
+| Action | How |
+| --- | --- |
+| Copy | Hold **Shift**, drag across the text, then release. It is copied automatically. **Ctrl+Insert** also copies a selection. |
+| Paste | **Ctrl+Shift+V** or **Shift+Insert**. Plain **Ctrl+V** does not paste: the terminal passes it to Codex as a control keystroke. |
+
+The same shortcuts work on Linux and ChromeOS.
+
+### macOS
+
+| Action | How |
+| --- | --- |
+| Copy | Hold **Option ⌥**, drag across the text, then release. It is copied automatically. **Cmd+C** also copies a selection. |
+| Paste | **Cmd+V**. |
+
+### Tips
+
+- A multi-line paste arrives as a single message. Review it at the Codex prompt,
+  then press **Enter** to send it.
+- To reuse terminal output inside Codex without touching your clipboard, drag
+  without holding a key (tmux copies it to its own buffer), then press
+  **Ctrl-b** followed by **]** to paste it at the Codex prompt.
+- If long pastes arrive garbled, make sure **Terminal file transfer** is off in
+  **HA Codex → Configuration**. It routes terminal input through a file-drop
+  handler that can interfere with large pastes.
+- On Home Assistant's iOS and Android apps and other touch browsers, use the
+  standard long-press selection and paste gestures.
+
 ## Safe first prompts
 
 Start in review mode:
