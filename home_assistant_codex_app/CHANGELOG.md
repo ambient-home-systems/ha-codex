@@ -2,6 +2,14 @@
 
 All notable changes to HA Codex are documented here.
 
+## 1.2.13
+
+- Updated the pinned Codex CLI from 0.154.0 to 0.156.0, including the version-matched `codex-code-mode-host` artifact.
+- Added `gpt-6-sol` and `gpt-6-luna` alongside `gpt-6-astra` in the model selector. Availability depends on the account, sign-in method, workspace settings, and rollout; adding a choice does not grant model access.
+- Kept `gpt-5.6-terra` as the default and preserved existing model choices and saved settings.
+- Updated the model documentation to match the selector and note that GPT-5.5 retires from Codex with ChatGPT sign-in on October 14, 2026; its API availability is unchanged.
+- Picked up upstream fixes for streamed responses, tmux clipboard forwarding, session resumption, and login through system proxies.
+
 ## 1.2.12
 
 - Enabled Option+drag text selection in the browser terminal on macOS (`macOptionClickForcesSelection`), so Mac users can copy terminal text to the clipboard while tmux owns the mouse, matching the existing Shift+drag behavior on Windows and Linux.

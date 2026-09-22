@@ -97,24 +97,30 @@ an issue, screenshot, chat, or repository file.
 
 HA Codex defaults to **GPT-5.6 Terra**: the sensible balance for routine Home
 Assistant reviews, configuration edits, and dashboard work. The Configuration
-tab offers every currently documented Codex CLI model:
+tab offers the following model choices:
 
 | Model | Best use |
 | --- | --- |
+| **GPT-6 Astra** | The hardest workflows across code, apps, and research. |
+| **GPT-6 Sol** | Complex coding and agentic workflows. |
+| **GPT-6 Luna** | Focused coding and clear, repeatable work. |
 | **GPT-5.6 Terra** (default) | Everyday Home Assistant work; the best balance of quality, speed, and usage. |
 | **GPT-5.6 Sol** | Difficult, ambiguous, high-value work that benefits from more analysis and polish. |
 | **GPT-5.6 Luna** | Clear, repeatable, or high-volume work where speed and lower usage matter. |
 | **GPT-5.6** | The general GPT-5.6 default model alias. |
-| **GPT-5.5** | The prior-generation frontier model. |
-| **GPT-5.4** / **GPT-5.4 Mini** | Older general-purpose and lightweight options. |
+| **GPT-5.5** | Previous-generation model; retires from Codex with ChatGPT sign-in on October 14, 2026. |
 | **GPT-5.3 Codex Spark** | A text-only, real-time coding preview for ChatGPT Pro accounts. |
 
 The Configuration setting starts Codex with `--model` every time the add-on
 starts. It is your durable startup preference. In contrast, `/model` inside
 Codex changes the model of the active session immediately. After changing the
 add-on setting, restart HA Codex; with session persistence on, this also opens
-the matching model-specific terminal session. Account access still controls
-which choices will actually run.
+the matching model-specific terminal session. Availability depends on your
+account, sign-in method, workspace settings, and rollout. Adding a choice here
+does not grant access to it. Check `/model` in an authenticated session for the
+choices available to your account, or see the [official Codex model guidance](https://learn.chatgpt.com/docs/models).
+GPT-5.5 remains available through the API after its ChatGPT sign-in retirement;
+ChatGPT users should select an available replacement before that date.
 
 ## Add-on settings
 
@@ -123,7 +129,7 @@ want before starting HA Codex. Restart the add-on after changing a setting.
 
 | Setting | Default | What it does |
 | --- | --- | --- |
-| **Model** | GPT-5.6 Terra | The starting model for new Codex sessions. Use Sol only for unusually difficult or broad work. |
+| **Model** | GPT-5.6 Terra | The starting model for new Codex sessions. Select an available GPT-6 model to use the latest generation. |
 | **Terminal font size** | 14 | Changes the terminal text size (10–24). |
 | **Terminal scrollback** | 5,000 lines | Sets how much past terminal output is retained (1,000–50,000 lines) in both the browser and persistent terminal session, including output produced immediately after startup. 5,000 is a practical balance. |
 | **Terminal theme** | Dark | Selects the terminal color theme. |

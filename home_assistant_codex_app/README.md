@@ -69,15 +69,20 @@ persists across restarts.
 
 HA Codex defaults to **GPT-5.6 Terra**, the balanced choice for most Home
 Assistant configuration reviews and edits. The Configuration tab also offers
-GPT-5.6 Sol (hard, open-ended work), GPT-5.6 Luna (clear, repeatable work),
-GPT-5.6, GPT-5.5, GPT-5.4, GPT-5.4 Mini, and the ChatGPT Pro-only GPT-5.3
-Codex Spark preview.
+GPT-6 Astra (the hardest workflows), GPT-6 Sol (complex coding and agentic work),
+and GPT-6 Luna (focused coding and repeatable work), alongside GPT-5.6 Sol,
+GPT-5.6 Luna, GPT-5.6, GPT-5.5, and the GPT-5.3 Codex Spark preview.
 
 This setting launches Codex with the selected model every time the add-on
 starts, so it is the durable default. Use `/model` inside Codex to change the
 currently active session immediately. Restart the add-on after changing the
-Configuration setting; your ChatGPT plan determines which listed models are
-available to you.
+Configuration setting. Availability depends on your account, sign-in method,
+workspace settings, and rollout; adding a choice does not grant access to it.
+Check `/model` in an authenticated session for the choices available to your
+account, or see the [official Codex model guidance](https://learn.chatgpt.com/docs/models).
+GPT-5.5 retires from Codex with ChatGPT sign-in on October 14, 2026, but remains
+available through the API. ChatGPT users should select an available replacement
+before that date.
 
 ## Add-on settings
 
@@ -87,7 +92,7 @@ Codex.
 
 | Setting | Default | What it does |
 | --- | --- | --- |
-| **Model** | GPT-5.6 Terra | Starts new Codex sessions with Terra. Use Sol only for unusually difficult or broad work. |
+| **Model** | GPT-5.6 Terra | The starting model for new Codex sessions. Select an available GPT-6 model to use the latest generation. |
 | **Terminal font size** | 14 | Sets terminal text size (10–24). |
 | **Terminal scrollback** | 5,000 lines | Keeps 1,000–50,000 lines of past terminal output in both the browser and persistent terminal session, including output produced immediately after startup. |
 | **Terminal theme** | Dark | Sets the terminal color theme. |
