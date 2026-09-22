@@ -3,4 +3,4 @@ build_from:
 args:
   TTYD_VERSION: "1.7.7"
   TRZSZ_VERSION: "1.2.0"
-  CODEX_VERSION: "0.154.0"
+  CODEX_VERSION: "0.156.0"
