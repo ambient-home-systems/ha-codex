@@ -98,6 +98,12 @@ fi
 
 CODEX_ARGS+=(--model "${MODEL}")
 
+# "default" passes nothing, so the model's own default or a model_reasoning_effort
+# saved in config.toml applies. Any other value overrides it for new sessions.
+if [ -n "${HA_CODEX_REASONING_EFFORT:-}" ] && [ "${HA_CODEX_REASONING_EFFORT}" != "default" ]; then
+  CODEX_ARGS+=(--config "model_reasoning_effort=\"${HA_CODEX_REASONING_EFFORT}\"")
+fi
+
 if [ "${TERMINAL_MODE}" = "inline" ]; then
   exec codex --no-alt-screen "${CODEX_ARGS[@]}"
 fi

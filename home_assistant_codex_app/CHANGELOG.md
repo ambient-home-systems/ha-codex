@@ -2,6 +2,11 @@
 
 All notable changes to HA Codex are documented here.
 
+## 1.2.16
+
+- Changed the default model from `gpt-5.6-terra` to `gpt-6-luna`. This only applies to new installs; existing installs keep the model already saved in their Configuration tab.
+- Added a **Reasoning effort** option (`default`, `low`, `medium`, `high`, `xhigh`), defaulting to `xhigh`. Any value other than `default` starts new Codex sessions with that `model_reasoning_effort`; `default` leaves the model's own setting, or the one saved in Codex, in place.
+
 ## 1.2.15
 
 - Added a **Skip command approvals** ("YOLO mode") option, off by default. When on, new Codex sessions start with `--ask-for-approval never`, so the choice survives add-on restarts instead of resetting like `/approvals` does. When off, nothing changes and any `approval_policy` in Codex's `config.toml` still applies.
