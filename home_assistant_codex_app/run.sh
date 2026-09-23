@@ -13,6 +13,7 @@ THEME="$(bashio::config 'terminal_theme')"
 PERSIST="$(bashio::config 'session_persistence')"
 PRESERVE_HISTORY="$(bashio::config 'preserve_terminal_history')"
 PATCH_COMPATIBILITY_MODE="$(bashio::config 'patch_compatibility_mode')"
+SKIP_COMMAND_APPROVALS="$(bashio::config 'skip_command_approvals')"
 FILE_TRANSFER="$(bashio::config 'file_transfer')"
 MEMORIES="$(bashio::config 'memories')"
 MODEL="$(bashio::config 'model')"
@@ -21,6 +22,7 @@ ALLOW_HOME_ASSISTANT_RESTART="$(bashio::config 'allow_home_assistant_restart')"
 export HA_CODEX_HOME_ASSISTANT_CONTROL="${HOME_ASSISTANT_CONTROL}"
 export HA_CODEX_ALLOW_HOME_ASSISTANT_RESTART="${ALLOW_HOME_ASSISTANT_RESTART}"
 export HA_CODEX_PATCH_COMPATIBILITY_MODE="${PATCH_COMPATIBILITY_MODE}"
+export HA_CODEX_SKIP_COMMAND_APPROVALS="${SKIP_COMMAND_APPROVALS}"
 export HA_CODEX_FILE_TRANSFER="${FILE_TRANSFER}"
 export HA_CODEX_MEMORIES="${MEMORIES}"
 
@@ -89,6 +91,11 @@ if [ "${PATCH_COMPATIBILITY_MODE}" = "true" ]; then
   bashio::log.info "Patch compatibility mode: true (new Codex sessions start with sandbox danger-full-access)."
 else
   bashio::log.info "Patch compatibility mode: false (Codex uses its Bubblewrap sandbox, which apply_patch cannot use on Home Assistant OS)."
+fi
+if [ "${SKIP_COMMAND_APPROVALS}" = "true" ]; then
+  bashio::log.warning "Skip command approvals: true (new Codex sessions run commands without asking for approval)."
+else
+  bashio::log.info "Skip command approvals: false (default; Codex uses its own approval policy)."
 fi
 bashio::log.info "Sandbox mode applies when a Codex session starts; restart the add-on after changing it so a fresh session takes effect."
 bashio::log.info "Home Assistant control actions: ${HOME_ASSISTANT_CONTROL}; Core restart: ${ALLOW_HOME_ASSISTANT_RESTART}."

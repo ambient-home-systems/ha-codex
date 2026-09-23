@@ -2,6 +2,10 @@
 
 All notable changes to HA Codex are documented here.
 
+## 1.2.15
+
+- Added a **Skip command approvals** ("YOLO mode") option, off by default. When on, new Codex sessions start with `--ask-for-approval never`, so the choice survives add-on restarts instead of resetting like `/approvals` does. When off, nothing changes and any `approval_policy` in Codex's `config.toml` still applies.
+
 ## 1.2.14
 
 - Added a **Codex memories** option to the add-on Configuration tab. When on, new Codex sessions start with the Codex `memories` feature enabled. It is off by default, and when off, any choice made with `/memories` in Codex still applies.
