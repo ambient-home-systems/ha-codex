@@ -95,16 +95,16 @@ an issue, screenshot, chat, or repository file.
 
 ## Model choice
 
-HA Codex defaults to **GPT-5.6 Terra**: the sensible balance for routine Home
-Assistant reviews, configuration edits, and dashboard work. The Configuration
+HA Codex defaults to **GPT-6 Luna** with **xhigh** reasoning effort. If GPT-6
+Luna is not available on your account, pick another model. The Configuration
 tab offers the following model choices:
 
 | Model | Best use |
 | --- | --- |
 | **GPT-6 Astra** | The hardest workflows across code, apps, and research. |
 | **GPT-6 Sol** | Complex coding and agentic workflows. |
-| **GPT-6 Luna** | Focused coding and clear, repeatable work. |
-| **GPT-5.6 Terra** (default) | Everyday Home Assistant work; the best balance of quality, speed, and usage. |
+| **GPT-6 Luna** (default) | Focused coding and clear, repeatable work. |
+| **GPT-5.6 Terra** | Everyday Home Assistant work; the best balance of quality, speed, and usage. |
 | **GPT-5.6 Sol** | Difficult, ambiguous, high-value work that benefits from more analysis and polish. |
 | **GPT-5.6 Luna** | Clear, repeatable, or high-volume work where speed and lower usage matter. |
 | **GPT-5.6** | The general GPT-5.6 default model alias. |
@@ -129,7 +129,8 @@ want before starting HA Codex. Restart the add-on after changing a setting.
 
 | Setting | Default | What it does |
 | --- | --- | --- |
-| **Model** | GPT-5.6 Terra | The starting model for new Codex sessions. Select an available GPT-6 model to use the latest generation. |
+| **Model** | GPT-6 Luna | The starting model for new Codex sessions. |
+| **Reasoning effort** | xhigh | How hard Codex thinks before answering: `low`, `medium`, `high`, or `xhigh`. Higher is more thorough but slower and uses more of your plan. `default` uses the model's own setting, or the one you saved in Codex. |
 | **Terminal font size** | 14 | Changes the terminal text size (10–24). |
 | **Terminal scrollback** | 5,000 lines | Sets how much past terminal output is retained (1,000–50,000 lines) in both the browser and persistent terminal session, including output produced immediately after startup. 5,000 is a practical balance. |
 | **Terminal theme** | Dark | Selects the terminal color theme. |

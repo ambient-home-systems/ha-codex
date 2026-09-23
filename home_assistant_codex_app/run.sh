@@ -17,6 +17,7 @@ SKIP_COMMAND_APPROVALS="$(bashio::config 'skip_command_approvals')"
 FILE_TRANSFER="$(bashio::config 'file_transfer')"
 MEMORIES="$(bashio::config 'memories')"
 MODEL="$(bashio::config 'model')"
+REASONING_EFFORT="$(bashio::config 'reasoning_effort')"
 HOME_ASSISTANT_CONTROL="$(bashio::config 'home_assistant_control')"
 ALLOW_HOME_ASSISTANT_RESTART="$(bashio::config 'allow_home_assistant_restart')"
 export HA_CODEX_HOME_ASSISTANT_CONTROL="${HOME_ASSISTANT_CONTROL}"
@@ -25,6 +26,7 @@ export HA_CODEX_PATCH_COMPATIBILITY_MODE="${PATCH_COMPATIBILITY_MODE}"
 export HA_CODEX_SKIP_COMMAND_APPROVALS="${SKIP_COMMAND_APPROVALS}"
 export HA_CODEX_FILE_TRANSFER="${FILE_TRANSFER}"
 export HA_CODEX_MEMORIES="${MEMORIES}"
+export HA_CODEX_REASONING_EFFORT="${REASONING_EFFORT}"
 
 # Codex renamed the memories feature flag from [features].memory_tool to
 # [features].memories and warns on every start while the old key remains.
@@ -85,6 +87,7 @@ fi
 
 bashio::log.info "Starting HA Codex."
 bashio::log.info "Using Codex model: ${MODEL}."
+bashio::log.info "Reasoning effort: ${REASONING_EFFORT}."
 bashio::log.info "Terminal history mode: ${TERMINAL_MODE}."
 bashio::log.info "First-time sign-in uses the HA Codex device-code method by default."
 if [ "${PATCH_COMPATIBILITY_MODE}" = "true" ]; then

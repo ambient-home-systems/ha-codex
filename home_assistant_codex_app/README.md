@@ -67,11 +67,11 @@ persists across restarts.
 
 ## Model choice
 
-HA Codex defaults to **GPT-5.6 Terra**, the balanced choice for most Home
-Assistant configuration reviews and edits. The Configuration tab also offers
-GPT-6 Astra (the hardest workflows), GPT-6 Sol (complex coding and agentic work),
-and GPT-6 Luna (focused coding and repeatable work), alongside GPT-5.6 Sol,
-GPT-5.6 Luna, GPT-5.6, GPT-5.5, and the GPT-5.3 Codex Spark preview.
+HA Codex defaults to **GPT-6 Luna** with **xhigh** reasoning effort. The
+Configuration tab also offers GPT-6 Astra (the hardest workflows), GPT-6 Sol
+(complex coding and agentic work), GPT-5.6 Terra (a balanced everyday choice),
+GPT-5.6 Sol, GPT-5.6 Luna, GPT-5.6, GPT-5.5, and the GPT-5.3 Codex Spark
+preview. If GPT-6 Luna is not available on your account, pick another model.
 
 This setting launches Codex with the selected model every time the add-on
 starts, so it is the durable default. Use `/model` inside Codex to change the
@@ -92,7 +92,8 @@ Codex.
 
 | Setting | Default | What it does |
 | --- | --- | --- |
-| **Model** | GPT-5.6 Terra | The starting model for new Codex sessions. Select an available GPT-6 model to use the latest generation. |
+| **Model** | GPT-6 Luna | The starting model for new Codex sessions. |
+| **Reasoning effort** | xhigh | How hard Codex thinks before answering: `low`, `medium`, `high`, or `xhigh`. Higher is more thorough but slower and uses more of your plan. `default` uses the model's own setting, or the one you saved in Codex. |
 | **Terminal font size** | 14 | Sets terminal text size (10–24). |
 | **Terminal scrollback** | 5,000 lines | Keeps 1,000–50,000 lines of past terminal output in both the browser and persistent terminal session, including output produced immediately after startup. |
 | **Terminal theme** | Dark | Sets the terminal color theme. |
