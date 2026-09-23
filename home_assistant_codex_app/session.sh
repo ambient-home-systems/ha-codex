@@ -83,6 +83,12 @@ if [ "${HA_CODEX_PATCH_COMPATIBILITY_MODE:-true}" = "true" ]; then
   CODEX_ARGS+=(--sandbox danger-full-access)
 fi
 
+# Enable Codex memories when the add-on option is on. When it is off, nothing is
+# passed, so a setting the user made with /memories still applies.
+if [ "${HA_CODEX_MEMORIES:-false}" = "true" ]; then
+  CODEX_ARGS+=(--enable memories)
+fi
+
 CODEX_ARGS+=(--model "${MODEL}")
 
 if [ "${TERMINAL_MODE}" = "inline" ]; then

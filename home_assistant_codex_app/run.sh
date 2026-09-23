@@ -14,6 +14,7 @@ PERSIST="$(bashio::config 'session_persistence')"
 PRESERVE_HISTORY="$(bashio::config 'preserve_terminal_history')"
 PATCH_COMPATIBILITY_MODE="$(bashio::config 'patch_compatibility_mode')"
 FILE_TRANSFER="$(bashio::config 'file_transfer')"
+MEMORIES="$(bashio::config 'memories')"
 MODEL="$(bashio::config 'model')"
 HOME_ASSISTANT_CONTROL="$(bashio::config 'home_assistant_control')"
 ALLOW_HOME_ASSISTANT_RESTART="$(bashio::config 'allow_home_assistant_restart')"
@@ -21,6 +22,45 @@ export HA_CODEX_HOME_ASSISTANT_CONTROL="${HOME_ASSISTANT_CONTROL}"
 export HA_CODEX_ALLOW_HOME_ASSISTANT_RESTART="${ALLOW_HOME_ASSISTANT_RESTART}"
 export HA_CODEX_PATCH_COMPATIBILITY_MODE="${PATCH_COMPATIBILITY_MODE}"
 export HA_CODEX_FILE_TRANSFER="${FILE_TRANSFER}"
+export HA_CODEX_MEMORIES="${MEMORIES}"
+
+# Codex renamed the memories feature flag from [features].memory_tool to
+# [features].memories and warns on every start while the old key remains.
+# A config.toml saved in the persistent Codex home may still hold the old key,
+# so rename it once here. Only that key is touched, in a
+# [features] table or as a top-level features.memory_tool dotted key. If the new
+# key is already present the old line is dropped instead, because a duplicate
+# key would make config.toml invalid.
+CODEX_CONFIG_FILE="${CODEX_DATA_DIR}/config.toml"
+if [ -f "${CODEX_CONFIG_FILE}" ] && grep -Eq '^[[:space:]]*(features\.)?memory_tool[[:space:]]*=' "${CODEX_CONFIG_FILE}"; then
+  CODEX_CONFIG_MIGRATED="$(mktemp)"
+  awk '
+    FNR == 1 { section = "" }
+    /^[[:space:]]*\[/ {
+      section = ($0 ~ /^[[:space:]]*\[[[:space:]]*features[[:space:]]*\][[:space:]]*(#.*)?$/) ? "features" : "other"
+    }
+    {
+      key = ""
+      if (section == "features" && $0 ~ /^[[:space:]]*memor(y_tool|ies)[[:space:]]*=/) key = $0
+      if (section == "" && $0 ~ /^[[:space:]]*features\.memor(y_tool|ies)[[:space:]]*=/) key = $0
+    }
+    NR == FNR {
+      if (key ~ /memories[[:space:]]*=/) has_memories = 1
+      next
+    }
+    key ~ /memory_tool[[:space:]]*=/ {
+      if (has_memories) next
+      sub(/memory_tool/, "memories")
+    }
+    { print }
+  ' "${CODEX_CONFIG_FILE}" "${CODEX_CONFIG_FILE}" > "${CODEX_CONFIG_MIGRATED}"
+  if ! cmp -s "${CODEX_CONFIG_MIGRATED}" "${CODEX_CONFIG_FILE}"; then
+    # cat keeps the existing file's ownership and permissions.
+    cat "${CODEX_CONFIG_MIGRATED}" > "${CODEX_CONFIG_FILE}"
+    bashio::log.info "Migrated the deprecated Codex [features].memory_tool setting to [features].memories."
+  fi
+  rm -f "${CODEX_CONFIG_MIGRATED}"
+fi
 
 TERMINAL_MODE="fullscreen"
 if [ "${PRESERVE_HISTORY}" = "true" ]; then
@@ -56,6 +96,11 @@ if [ "${FILE_TRANSFER}" = "true" ]; then
   bashio::log.info "Terminal file transfer: true (trz/tsz enabled; may interfere with pasting long text)."
 else
   bashio::log.info "Terminal file transfer: false (default; pasting long text is unaffected)."
+fi
+if [ "${MEMORIES}" = "true" ]; then
+  bashio::log.info "Codex memories: true (new Codex sessions start with the memories feature enabled)."
+else
+  bashio::log.info "Codex memories: false (default; Codex keeps any setting made with /memories)."
 fi
 
 # ttyd bundles its browser client in its executable.  Extract its matching
