@@ -292,6 +292,10 @@ Every release has three matching records:
 - User-facing Home Assistant update notes in the [changelog](home_assistant_codex_app/CHANGELOG.md).
 - A tagged [GitHub Release](https://github.com/ambient-home-systems/ha-codex/releases).
 
+Maintainers publish the release by running the **Publish HA Codex release**
+workflow from the Actions tab after the version bump reaches `main`. It tags the
+version-bump commit and uses that version's changelog section as the notes.
+
 Use the App Store to install updates. Open the update details before
 installing to read the changelog.
 
