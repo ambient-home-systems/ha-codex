@@ -83,6 +83,13 @@ if [ "${HA_CODEX_PATCH_COMPATIBILITY_MODE:-true}" = "true" ]; then
   CODEX_ARGS+=(--sandbox danger-full-access)
 fi
 
+# "YOLO mode": a mode chosen with /approvals lasts only for the running session,
+# so the add-on option is how a no-prompt policy survives restarts. When it is
+# off, nothing is passed, so approval_policy from config.toml still applies.
+if [ "${HA_CODEX_SKIP_COMMAND_APPROVALS:-false}" = "true" ]; then
+  CODEX_ARGS+=(--ask-for-approval never)
+fi
+
 # Enable Codex memories when the add-on option is on. When it is off, nothing is
 # passed, so a setting the user made with /memories still applies.
 if [ "${HA_CODEX_MEMORIES:-false}" = "true" ]; then

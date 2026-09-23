@@ -99,6 +99,7 @@ Codex.
 | **Session persistence** | On | Keeps the active Codex session running when you leave HA Codex for another Home Assistant page, then reconnects it when you return. |
 | **Preserve terminal history** | On | Keeps the visible browser scrollbar and long inline transcript while the active session persists in the background. Recommended. |
 | **Patch compatibility mode** | On | Lets Codex use normal patches on Home Assistant OS, avoiding the nested Bubblewrap restriction that otherwise forces a shell-edit fallback. Command approval behavior is unchanged. |
+| **Skip command approvals** | Off | "YOLO mode". New Codex sessions run commands and edit files without asking you first, including Home Assistant reloads and restarts when control actions are enabled. Only turn it on if you review Codex's changes afterwards and keep backups. When off, Codex asks as usual. |
 | **Terminal file transfer** | Off | Enables `trz`/`tsz` file transfer so you can attach files to the terminal. Off by default because it can interfere with pasting long text. Turn it on only when you need to move files. |
 | **Codex memories** | Off | Starts new Codex sessions with the Codex memories feature enabled, so Codex can remember useful details between sessions. When off, any choice made with `/memories` in Codex still applies. |
 | **Allow Home Assistant control actions** | Off | Enables HA Codex's restricted configuration check and reload helper. |
@@ -148,6 +149,16 @@ two ways:
 This most often happens when a session that started before Patch compatibility
 mode was enabled is kept alive by Session persistence, or when the mode was
 changed with `/approvals` during the session.
+
+### Skip command approvals
+
+Choosing a mode with `/approvals` inside Codex only lasts for the running
+session, so it resets when the add-on restarts. To make "never ask" stick, turn
+on **Skip command approvals** and restart HA Codex. Codex then runs commands
+without asking, so a reload or restart requested through `ha-codex-ha` also
+runs without an approval prompt. The helper still refuses a Core restart until
+the configuration check passes. Take a backup before letting Codex work
+unattended.
 
 ### Home Assistant control actions
 

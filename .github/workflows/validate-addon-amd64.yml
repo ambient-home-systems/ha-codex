@@ -108,7 +108,7 @@ jobs:
           test -n "$default_model"
           for model in "$default_model" gpt-6-astra gpt-6-sol gpt-6-luna; do
             grep -E '^  model: list\(' home_assistant_codex_app/config.yaml | grep -F "$model"
-            printf '{"model":"%s","terminal_font_size":14,"terminal_scrollback":5000,"terminal_theme":"dark","session_persistence":true,"preserve_terminal_history":true,"patch_compatibility_mode":true,"file_transfer":false,"memories":false,"home_assistant_control":false,"allow_home_assistant_restart":false}\n' "$model" > "$options_file"
+            printf '{"model":"%s","terminal_font_size":14,"terminal_scrollback":5000,"terminal_theme":"dark","session_persistence":true,"preserve_terminal_history":true,"patch_compatibility_mode":true,"skip_command_approvals":false,"file_transfer":false,"memories":false,"home_assistant_control":false,"allow_home_assistant_restart":false}\n' "$model" > "$options_file"
             docker run --detach --name ha-codex-runtime-smoke \
               --network ha-codex-smoke "$image"
 
@@ -131,6 +131,7 @@ jobs:
             printf '%s\n' "$logs" | grep -F 'Terminal history mode: inline.'
             printf '%s\n' "$logs" | grep -F 'Home Assistant control actions: false; Core restart: false.'
             printf '%s\n' "$logs" | grep -F 'Codex memories: false'
+            printf '%s\n' "$logs" | grep -F 'Skip command approvals: false'
             if printf '%s\n' "$logs" | grep -E 'ERROR:|Failed to get addon config'; then
               exit 1
             fi

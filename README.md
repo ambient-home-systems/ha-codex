@@ -136,6 +136,7 @@ want before starting HA Codex. Restart the add-on after changing a setting.
 | **Session persistence** | On | Keeps the active Codex session running while you navigate to another Home Assistant page, then reattaches it when you return to the HA Codex sidebar. |
 | **Preserve terminal history** | On | Retains the browser's visible scrollbar and long inline transcript while the persistent session runs in the background. This is recommended. |
 | **Patch compatibility mode** | On | Lets Codex use its normal patch mechanism on Home Assistant OS, whose nested Bubblewrap restriction would otherwise force a shell-edit fallback. Command approval behavior is unchanged. |
+| **Skip command approvals** | Off | "YOLO mode". New Codex sessions run commands and edit files without asking you first, including Home Assistant reloads and restarts when control actions are enabled. Turn it on only if you review Codex's changes afterwards and keep backups. When off, Codex asks as usual. |
 | **Codex memories** | Off | Starts new Codex sessions with the Codex memories feature enabled, so Codex can carry useful details between sessions. When off, any choice made with `/memories` in Codex still applies. |
 | **Allow Home Assistant control actions** | Off | Lets Codex validate configuration and request only the supported reload actions through HA Codex's restricted helper. |
 | **Allow Home Assistant Core restart** | Off | Lets the helper restart Core only after a successful configuration check. Requires Home Assistant control actions to be enabled. |
@@ -160,6 +161,15 @@ Docker, Supervisor, update, shutdown, or arbitrary Home Assistant service
 control. A dashboard configuration change can still require refreshing the
 browser; reloading Lovelace resources does not itself reload a dashboard's YAML
 or storage configuration.
+
+### Skip command approvals ("YOLO mode")
+
+A mode chosen with `/approvals` inside Codex only lasts for the running
+session. To keep "never ask" across restarts, turn on **Skip command
+approvals** in **HA Codex → Configuration** and restart the add-on. Codex then
+runs commands and reloads or restarts Home Assistant (if control actions are
+enabled) without asking first; the helper still requires a passing
+configuration check before a Core restart. Take a backup before using it.
 
 ### Long reviews and scrolling
 
