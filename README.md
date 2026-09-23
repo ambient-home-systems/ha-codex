@@ -136,6 +136,7 @@ want before starting HA Codex. Restart the add-on after changing a setting.
 | **Session persistence** | On | Keeps the active Codex session running while you navigate to another Home Assistant page, then reattaches it when you return to the HA Codex sidebar. |
 | **Preserve terminal history** | On | Retains the browser's visible scrollbar and long inline transcript while the persistent session runs in the background. This is recommended. |
 | **Patch compatibility mode** | On | Lets Codex use its normal patch mechanism on Home Assistant OS, whose nested Bubblewrap restriction would otherwise force a shell-edit fallback. Command approval behavior is unchanged. |
+| **Codex memories** | Off | Starts new Codex sessions with the Codex memories feature enabled, so Codex can carry useful details between sessions. When off, any choice made with `/memories` in Codex still applies. |
 | **Allow Home Assistant control actions** | Off | Lets Codex validate configuration and request only the supported reload actions through HA Codex's restricted helper. |
 | **Allow Home Assistant Core restart** | Off | Lets the helper restart Core only after a successful configuration check. Requires Home Assistant control actions to be enabled. |
 
@@ -256,6 +257,13 @@ Assistant or HA Codex failure. If `codex mcp list` reports that no MCP servers
 are configured and Codex can read your files, **you can safely ignore it**. It
 does not affect normal Codex prompts, terminal commands, or access to your Home
 Assistant configuration.
+
+### `[features].memory_tool` is deprecated
+
+Codex renamed this setting to `[features].memories`. HA Codex 1.2.14 and later
+renames the old key in its saved Codex configuration when the add-on starts, so
+restart the add-on once to clear the warning. To turn memories on from the
+add-on, enable **Codex memories** in the Configuration tab.
 
 ### Sandbox / Bubblewrap warning
 

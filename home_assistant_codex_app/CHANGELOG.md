@@ -2,6 +2,11 @@
 
 All notable changes to HA Codex are documented here.
 
+## 1.2.14
+
+- Added a **Codex memories** option to the add-on Configuration tab. When on, new Codex sessions start with the Codex `memories` feature enabled. It is off by default, and when off, any choice made with `/memories` in Codex still applies.
+- Fixed the startup warning "`[features].memory_tool` is deprecated". At startup the add-on now renames the old `memory_tool` key to `memories` in the saved Codex `config.toml`, keeping its value, and changes nothing else in the file.
+
 ## 1.2.13
 
 - Updated the pinned Codex CLI from 0.154.0 to 0.156.0, including the version-matched `codex-code-mode-host` artifact.
