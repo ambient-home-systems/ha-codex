@@ -172,7 +172,8 @@ are off by default.
 Codex uses the built-in `ha-codex-ha` helper, which can validate configuration,
 reload automations, scripts, scenes, groups, templates, Core configuration, or
 Lovelace resources, and restart Core only after validation. Codex must explain
-the action and request command approval first. The helper cannot control the
+the action and request command approval first, unless **Skip command approvals**
+is on. The helper cannot control the
 host, Docker, Supervisor, updates, shutdown, or arbitrary Home Assistant
 services. Refresh the browser after dashboard changes; reloading Lovelace
 resources does not reload dashboard YAML or storage configuration by itself.

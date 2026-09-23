@@ -139,6 +139,7 @@ want before starting HA Codex. Restart the add-on after changing a setting.
 | **Patch compatibility mode** | On | Lets Codex use its normal patch mechanism on Home Assistant OS, whose nested Bubblewrap restriction would otherwise force a shell-edit fallback. Command approval behavior is unchanged. |
 | **Skip command approvals** | Off | "YOLO mode". New Codex sessions run commands and edit files without asking you first, including Home Assistant reloads and restarts when control actions are enabled. Turn it on only if you review Codex's changes afterwards and keep backups. When off, Codex asks as usual. |
 | **Codex memories** | Off | Starts new Codex sessions with the Codex memories feature enabled, so Codex can carry useful details between sessions. When off, any choice made with `/memories` in Codex still applies. |
+| **Terminal file transfer** | Off | Enables `trz`/`tsz` so you can upload files to the terminal and download them back. Leave it off unless you need it, because it can interfere with pasting long text. |
 | **Allow Home Assistant control actions** | Off | Lets Codex validate configuration and request only the supported reload actions through HA Codex's restricted helper. |
 | **Allow Home Assistant Core restart** | Off | Lets the helper restart Core only after a successful configuration check. Requires Home Assistant control actions to be enabled. |
 
@@ -153,7 +154,8 @@ To enable it, turn on **Allow Home Assistant control actions** in
 **HA Codex → Configuration**, then restart the add-on. To permit Core restarts
 as well, explicitly turn on **Allow Home Assistant Core restart**. Both are off
 by default. Codex is instructed to show the intended action and ask for command
-approval before requesting a reload or restart.
+approval before requesting a reload or restart, unless **Skip command
+approvals** is on.
 
 The built-in `ha-codex-ha` helper supports a configuration check; reloads for
 automations, scripts, scenes, groups, templates, Core configuration, and
