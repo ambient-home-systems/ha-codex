@@ -4,6 +4,7 @@ All notable changes to HA Codex are documented here.
 
 ## 1.2.16
 
+- Updated the pinned Codex CLI from 0.156.0 to 0.156.1, including the version-matched `codex-code-mode-host` artifact. This release adds GPT-6 Sol and Luna to Codex's built-in model list, including `xhigh` reasoning for GPT-6 Luna.
 - Changed the default model from `gpt-5.6-terra` to `gpt-6-luna`. This only applies to new installs; existing installs keep the model already saved in their Configuration tab.
 - Added a **Reasoning effort** option (`default`, `low`, `medium`, `high`, `xhigh`), defaulting to `xhigh`. Any value other than `default` starts new Codex sessions with that `model_reasoning_effort`; `default` leaves the model's own setting, or the one saved in Codex, in place.
 
