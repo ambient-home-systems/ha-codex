@@ -7,6 +7,14 @@ on:
       - ".github/workflows/validate-addon-amd64.yml"
       - ".github/scripts/supervisor-options-fixture.cjs"
   workflow_dispatch:
+  # The Codex auto-update workflow runs this on its update branch before
+  # releasing, since pushes made with GITHUB_TOKEN start no workflows.
+  workflow_call:
+    inputs:
+      ref:
+        description: Commit to build and test.
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -20,6 +28,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || '' }}
 
       - name: Read pinned build configuration
         id: build_config

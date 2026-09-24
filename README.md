@@ -296,6 +296,16 @@ Maintainers publish the release by running the **Publish HA Codex release**
 workflow from the Actions tab after the version bump reaches `main`. It tags the
 version-bump commit and uses that version's changelog section as the notes.
 
+Codex CLI updates are released automatically. Every 6 hours the **Update
+Codex CLI** workflow checks for a newer stable Codex CLI release. When one
+exists, it pins that version in `build.yaml`, bumps the add-on's patch version,
+adds a changelog entry, and runs the amd64 build and smoke test on a
+`codex-update/<version>` branch. If the test passes, it fast-forwards `main` and
+publishes the release. If the test fails, `main` stays as it is, the branch is
+kept for inspection, and the next run tries again. The workflow only changes
+the Codex version, so new models still need to be added to the model selector
+by hand.
+
 Use the App Store to install updates. Open the update details before
 installing to read the changelog.
 
