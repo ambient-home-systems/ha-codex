@@ -1,0 +1,108 @@
+name: Update Codex CLI
+
+# Every 6 hours, look for a newer stable Codex CLI release. When one exists,
+# pin it on a codex-update/<version> branch, build and smoke-test that commit,
+# then fast-forward main to it and publish the GitHub Release. A failed test
+# leaves main unchanged and the branch in place for inspection; the next run
+# tries again.
+on:
+  schedule:
+    - cron: "23 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: codex-auto-update
+
+jobs:
+  prepare:
+    name: Check for a Codex update
+    # The release fast-forwards main, so refuse runs from other branches.
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    outputs:
+      update: ${{ steps.update.outputs.update }}
+      codex_version: ${{ steps.update.outputs.codex_version }}
+      branch: ${{ steps.push.outputs.branch }}
+      sha: ${{ steps.push.outputs.sha }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Apply the newest stable Codex release
+        id: update
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash .github/scripts/update-codex.sh
+
+      - name: Push update branch
+        id: push
+        if: steps.update.outputs.update == 'true'
+        env:
+          CODEX_VERSION: ${{ steps.update.outputs.codex_version }}
+          PREVIOUS_VERSION: ${{ steps.update.outputs.previous_version }}
+          ADDON_VERSION: ${{ steps.update.outputs.addon_version }}
+        run: |
+          branch="codex-update/${CODEX_VERSION}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git commit --all \
+            --message "Update Codex CLI to ${CODEX_VERSION}" \
+            --message "Pins Codex CLI ${CODEX_VERSION} (was ${PREVIOUS_VERSION}) and releases HA Codex ${ADDON_VERSION}."
+          git push --force origin "HEAD:refs/heads/${branch}"
+          {
+            echo "branch=${branch}"
+            echo "sha=$(git rev-parse HEAD)"
+          } >> "$GITHUB_OUTPUT"
+
+  validate:
+    name: Validate update
+    needs: prepare
+    if: needs.prepare.outputs.update == 'true'
+    uses: ./.github/workflows/validate-addon-amd64.yml
+    with:
+      ref: ${{ needs.prepare.outputs.sha }}
+
+  release:
+    name: Release update
+    needs: [prepare, validate]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    concurrency:
+      group: publish-release
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fast-forward main to the tested commit
+        env:
+          BRANCH: ${{ needs.prepare.outputs.branch }}
+          SHA: ${{ needs.prepare.outputs.sha }}
+        run: |
+          git fetch origin "refs/heads/${BRANCH}"
+          test "$(git rev-parse FETCH_HEAD)" = "${SHA}"
+          git merge --ff-only "${SHA}"
+          # Rejected, and nothing is released, if main moved since the check.
+          git push origin "${SHA}:refs/heads/main"
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ""
+        run: bash .github/scripts/publish-release.sh
+
+      - name: Delete update branch
+        env:
+          BRANCH: ${{ needs.prepare.outputs.branch }}
+        run: git push origin --delete "${BRANCH}"

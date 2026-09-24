@@ -130,7 +130,7 @@ want before starting HA Codex. Restart the add-on after changing a setting.
 | Setting | Default | What it does |
 | --- | --- | --- |
 | **Model** | GPT-6 Luna | The starting model for new Codex sessions. |
-| **Reasoning effort** | xhigh | How hard Codex thinks before answering: `low`, `medium`, `high`, or `xhigh`. Higher is more thorough but slower and uses more of your plan. `default` uses the model's own setting, or the one you saved in Codex. |
+| **Reasoning effort** | xhigh | How hard Codex thinks before answering: `low`, `medium`, `high`, `xhigh`, `max`, or `ultra`. Higher is more thorough but slower and uses more of your plan. `ultra` is available on GPT-6 Astra, GPT-6 Sol, GPT-5.6 Terra, and GPT-5.6 Sol; `max` also on GPT-6 Luna and GPT-5.6 Luna. Other models go up to `xhigh`. A level the selected model does not offer is lowered to its highest one, with a note in the add-on log. `default` uses the model's own setting, or the one you saved in Codex. |
 | **Terminal font size** | 14 | Changes the terminal text size (10–24). |
 | **Terminal scrollback** | 5,000 lines | Sets how much past terminal output is retained (1,000–50,000 lines) in both the browser and persistent terminal session, including output produced immediately after startup. 5,000 is a practical balance. |
 | **Terminal theme** | Dark | Selects the terminal color theme. |
@@ -295,6 +295,16 @@ Every release has three matching records:
 Maintainers publish the release by running the **Publish HA Codex release**
 workflow from the Actions tab after the version bump reaches `main`. It tags the
 version-bump commit and uses that version's changelog section as the notes.
+
+Codex CLI updates are released automatically. Every 6 hours the **Update
+Codex CLI** workflow checks for a newer stable Codex CLI release. When one
+exists, it pins that version in `build.yaml`, bumps the add-on's patch version,
+adds a changelog entry, and runs the amd64 build and smoke test on a
+`codex-update/<version>` branch. If the test passes, it fast-forwards `main` and
+publishes the release. If the test fails, `main` stays as it is, the branch is
+kept for inspection, and the next run tries again. The workflow only changes
+the Codex version, so new models still need to be added to the model selector
+by hand.
 
 Use the App Store to install updates. Open the update details before
 installing to read the changelog.

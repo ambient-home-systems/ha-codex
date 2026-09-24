@@ -93,7 +93,7 @@ Codex.
 | Setting | Default | What it does |
 | --- | --- | --- |
 | **Model** | GPT-6 Luna | The starting model for new Codex sessions. |
-| **Reasoning effort** | xhigh | How hard Codex thinks before answering: `low`, `medium`, `high`, or `xhigh`. Higher is more thorough but slower and uses more of your plan. `default` uses the model's own setting, or the one you saved in Codex. |
+| **Reasoning effort** | xhigh | How hard Codex thinks before answering: `low`, `medium`, `high`, `xhigh`, `max`, or `ultra`. Higher is more thorough but slower and uses more of your plan. `ultra` is available on GPT-6 Astra, GPT-6 Sol, GPT-5.6 Terra, and GPT-5.6 Sol; `max` also on GPT-6 Luna and GPT-5.6 Luna. Other models go up to `xhigh`. A level the selected model does not offer is lowered to its highest one, with a note in the add-on log. `default` uses the model's own setting, or the one you saved in Codex. |
 | **Terminal font size** | 14 | Sets terminal text size (10–24). |
 | **Terminal scrollback** | 5,000 lines | Keeps 1,000–50,000 lines of past terminal output in both the browser and persistent terminal session, including output produced immediately after startup. |
 | **Terminal theme** | Dark | Sets the terminal color theme. |
