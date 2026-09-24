@@ -106,9 +106,13 @@ jobs:
 
           default_model="$(awk '$1 == "model:" && $2 !~ /^list\(/ {print $2}' home_assistant_codex_app/config.yaml)"
           test -n "$default_model"
-          for model in $(printf '%s\n' "$default_model" gpt-6-astra gpt-6-sol gpt-6-luna | awk '!seen[$0]++'); do
+          # Each case is model:selected effort:effort the add-on should use.
+          # The last two check that a level the model lacks is lowered.
+          for case in $(printf '%s\n' "$default_model:xhigh:xhigh" gpt-6-astra:ultra:ultra gpt-6-sol:xhigh:xhigh gpt-6-luna:max:max gpt-6-luna:ultra:max gpt-5.5:max:xhigh | awk '!seen[$0]++'); do
+            IFS=: read -r model effort expected_effort <<< "$case"
             grep -E '^  model: list\(' home_assistant_codex_app/config.yaml | grep -F "$model"
-            printf '{"model":"%s","reasoning_effort":"xhigh","terminal_font_size":14,"terminal_scrollback":5000,"terminal_theme":"dark","session_persistence":true,"preserve_terminal_history":true,"patch_compatibility_mode":true,"skip_command_approvals":false,"file_transfer":false,"memories":false,"home_assistant_control":false,"allow_home_assistant_restart":false}\n' "$model" > "$options_file"
+            grep -E '^  reasoning_effort: list\(' home_assistant_codex_app/config.yaml | grep -E "[(|]${effort}[|)]"
+            printf '{"model":"%s","reasoning_effort":"%s","terminal_font_size":14,"terminal_scrollback":5000,"terminal_theme":"dark","session_persistence":true,"preserve_terminal_history":true,"patch_compatibility_mode":true,"skip_command_approvals":false,"file_transfer":false,"memories":false,"home_assistant_control":false,"allow_home_assistant_restart":false}\n' "$model" "$effort" > "$options_file"
             docker run --detach --name ha-codex-runtime-smoke \
               --network ha-codex-smoke "$image"
 
@@ -128,7 +132,12 @@ jobs:
             logs="$(docker logs ha-codex-runtime-smoke 2>&1)"
             printf '%s\n' "$logs"
             printf '%s\n' "$logs" | grep -F "Using Codex model: ${model}."
-            printf '%s\n' "$logs" | grep -F 'Reasoning effort: xhigh.'
+            printf '%s\n' "$logs" | grep -F "Reasoning effort: ${expected_effort}."
+            if [ "$effort" != "$expected_effort" ]; then
+              printf '%s\n' "$logs" | grep -F "Reasoning effort ${effort} is not available for ${model}; using ${expected_effort}"
+            elif printf '%s\n' "$logs" | grep -F 'is not available for'; then
+              exit 1
+            fi
             printf '%s\n' "$logs" | grep -F 'Terminal history mode: inline.'
             printf '%s\n' "$logs" | grep -F 'Home Assistant control actions: false; Core restart: false.'
             printf '%s\n' "$logs" | grep -F 'Codex memories: false'

@@ -20,6 +20,33 @@ MODEL="$(bashio::config 'model')"
 REASONING_EFFORT="$(bashio::config 'reasoning_effort')"
 HOME_ASSISTANT_CONTROL="$(bashio::config 'home_assistant_control')"
 ALLOW_HOME_ASSISTANT_RESTART="$(bashio::config 'allow_home_assistant_restart')"
+
+# Not every model offers every reasoning effort. The highest level per model
+# follows Codex's model catalog: ultra on Astra, Sol, and Terra, max on the Luna
+# models, and xhigh on the rest. A higher selection is lowered to the model's
+# highest level so the session still starts; lower selections pass unchanged.
+readonly REASONING_EFFORT_LEVELS="low medium high xhigh max ultra"
+case "${MODEL}" in
+  gpt-6-astra|gpt-6-sol|gpt-5.6-terra|gpt-5.6-sol) MAX_REASONING_EFFORT="ultra" ;;
+  gpt-6-luna|gpt-5.6-luna) MAX_REASONING_EFFORT="max" ;;
+  *) MAX_REASONING_EFFORT="xhigh" ;;
+esac
+reasoning_effort_rank() {
+  local rank=0 level
+  for level in ${REASONING_EFFORT_LEVELS}; do
+    rank=$((rank + 1))
+    if [ "${level}" = "$1" ]; then
+      printf '%s' "${rank}"
+      return
+    fi
+  done
+  printf '0'
+}
+if [ "$(reasoning_effort_rank "${REASONING_EFFORT}")" -gt "$(reasoning_effort_rank "${MAX_REASONING_EFFORT}")" ]; then
+  REQUESTED_REASONING_EFFORT="${REASONING_EFFORT}"
+  REASONING_EFFORT="${MAX_REASONING_EFFORT}"
+fi
+
 export HA_CODEX_HOME_ASSISTANT_CONTROL="${HOME_ASSISTANT_CONTROL}"
 export HA_CODEX_ALLOW_HOME_ASSISTANT_RESTART="${ALLOW_HOME_ASSISTANT_RESTART}"
 export HA_CODEX_PATCH_COMPATIBILITY_MODE="${PATCH_COMPATIBILITY_MODE}"
@@ -87,6 +114,9 @@ fi
 
 bashio::log.info "Starting HA Codex."
 bashio::log.info "Using Codex model: ${MODEL}."
+if [ -n "${REQUESTED_REASONING_EFFORT:-}" ]; then
+  bashio::log.warning "Reasoning effort ${REQUESTED_REASONING_EFFORT} is not available for ${MODEL}; using ${REASONING_EFFORT}, the highest level it supports."
+fi
 bashio::log.info "Reasoning effort: ${REASONING_EFFORT}."
 bashio::log.info "Terminal history mode: ${TERMINAL_MODE}."
 bashio::log.info "First-time sign-in uses the HA Codex device-code method by default."
