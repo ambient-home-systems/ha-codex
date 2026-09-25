@@ -2,6 +2,11 @@
 
 All notable changes to HA Codex are documented here.
 
+## 1.2.18
+
+- Updated the pinned Codex CLI from 0.156.1 to 0.157.0, including the version-matched `codex-code-mode-host` artifact. See the [Codex 0.157.0 release notes](https://github.com/openai/codex/releases/tag/rust-v0.157.0) for what changed.
+- Released automatically after the amd64 build and smoke test passed. Model choices and settings are unchanged.
+
 ## 1.2.17
 
 - Added `max` and `ultra` to the **Reasoning effort** option. `ultra` is available on GPT-6 Astra, GPT-6 Sol, GPT-5.6 Terra, and GPT-5.6 Sol, and `max` on those models plus GPT-6 Luna and GPT-5.6 Luna, matching Codex's model catalog. If the selected model does not offer the chosen level, HA Codex starts the session with the model's highest level instead (for example `xhigh` for GPT-5.5) and says so in the add-on log. The default stays `xhigh`, and existing installs keep their saved choice.
