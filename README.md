@@ -300,7 +300,10 @@ Codex CLI updates are released automatically. Every 6 hours the **Update
 Codex CLI** workflow checks for a newer stable Codex CLI release. When one
 exists, it pins that version in `build.yaml`, bumps the add-on's patch version,
 adds a changelog entry, and runs the amd64 and aarch64 builds and smoke tests on a
-`codex-update/<version>` branch. If the test passes, it fast-forwards `main` and
+`codex-update/<version>` branch. The tests run as a separate **HA Codex image
+validation** run, so the commit carries the `Build and smoke-test amd64 add-on`
+and `Build and smoke-test aarch64 add-on` checks that `main` requires. If the
+test passes, it fast-forwards `main` and
 publishes the release. If the test fails, `main` stays as it is, the branch is
 kept for inspection, and the next run tries again. The workflow only changes
 the Codex version, so new models still need to be added to the model selector
