@@ -65,7 +65,7 @@ jobs:
     name: Validate update
     needs: prepare
     if: needs.prepare.outputs.update == 'true'
-    uses: ./.github/workflows/validate-addon-amd64.yml
+    uses: ./.github/workflows/validate-addon.yml
     with:
       ref: ${{ needs.prepare.outputs.sha }}
 

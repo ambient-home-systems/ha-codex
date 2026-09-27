@@ -2,6 +2,11 @@
 
 All notable changes to HA Codex are documented here.
 
+## 1.2.20
+
+- Added support for the `aarch64` architecture, so HA Codex now installs on 64-bit Arm hosts such as the Raspberry Pi 4 and 5, Home Assistant Green, Home Assistant Yellow, and ODROID-N2+. Codex CLI, `codex-code-mode-host`, ttyd, and trzsz are downloaded as their native Arm builds.
+- Every release is now built and smoke-tested on both amd64 and aarch64 before it is published. Model choices and settings are unchanged.
+
 ## 1.2.19
 
 - Updated the pinned Codex CLI from 0.157.0 to 0.157.1, including the version-matched `codex-code-mode-host` artifact. See the [Codex 0.157.1 release notes](https://github.com/openai/codex/releases/tag/rust-v0.157.1) for what changed.

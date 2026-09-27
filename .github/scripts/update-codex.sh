@@ -4,8 +4,8 @@
 # version in config.yaml, and a new CHANGELOG section. Nothing is committed here.
 #
 # A release counts only when it is published (not a draft or prerelease), its
-# tag is a plain rust-vX.Y.Z, and it already has both Linux musl archives the
-# Dockerfile downloads, since assets can be uploaded after a release appears.
+# tag is a plain rust-vX.Y.Z, and it already has the Linux musl archives the
+# Dockerfile downloads for every supported architecture, since assets can be uploaded after a release appears.
 #
 # Writes update=true|false, and on an update codex_version, previous_version,
 # and addon_version, to GITHUB_OUTPUT when it is set.
@@ -29,6 +29,8 @@ latest="$(gh api 'repos/openai/codex/releases?per_page=50' --jq '
   | select(.tag_name | test("^rust-v[0-9]+\\.[0-9]+\\.[0-9]+$"))
   | select([.assets[].name] | index("codex-x86_64-unknown-linux-musl.tar.gz"))
   | select([.assets[].name] | index("codex-code-mode-host-x86_64-unknown-linux-musl.tar.gz"))
+  | select([.assets[].name] | index("codex-aarch64-unknown-linux-musl.tar.gz"))
+  | select([.assets[].name] | index("codex-code-mode-host-aarch64-unknown-linux-musl.tar.gz"))
   | .tag_name | ltrimstr("rust-v")
 ' | sort -V | tail -n 1)"
 if [ -z "${latest}" ]; then
@@ -53,7 +55,7 @@ entry="$(cat <<EOF
 ## ${addon_next}
 
 - Updated the pinned Codex CLI from ${current} to ${latest}, including the version-matched \`codex-code-mode-host\` artifact. See the [Codex ${latest} release notes](https://github.com/openai/codex/releases/tag/rust-v${latest}) for what changed.
-- Released automatically after the amd64 build and smoke test passed. Model choices and settings are unchanged.
+- Released automatically after the amd64 and aarch64 builds and smoke tests passed. Model choices and settings are unchanged.
 EOF
 )"
 changelog_updated="$(mktemp)"

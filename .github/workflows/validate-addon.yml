@@ -1,10 +1,10 @@
-name: HA Codex amd64 image validation
+name: HA Codex image validation
 
 on:
   pull_request:
     paths:
       - "home_assistant_codex_app/**"
-      - ".github/workflows/validate-addon-amd64.yml"
+      - ".github/workflows/validate-addon.yml"
       - ".github/scripts/supervisor-options-fixture.cjs"
   workflow_dispatch:
   # The Codex auto-update workflow runs this on its update branch before
@@ -21,9 +21,19 @@ permissions:
 
 jobs:
   build-and-smoke-test:
-    name: Build and smoke-test amd64 add-on
-    runs-on: ubuntu-24.04
+    name: Build and smoke-test ${{ matrix.arch }} add-on
+    runs-on: ${{ matrix.runner }}
     timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            platform: linux/amd64
+            runner: ubuntu-24.04
+          - arch: aarch64
+            platform: linux/aarch64
+            runner: ubuntu-24.04-arm
 
     steps:
       - name: Check out repository
@@ -33,9 +43,11 @@ jobs:
 
       - name: Read pinned build configuration
         id: build_config
+        env:
+          BUILD_ARCH: ${{ matrix.arch }}
         run: |
           build_file="home_assistant_codex_app/build.yaml"
-          build_from="$(awk '$1 == "amd64:" {print $2}' "$build_file")"
+          build_from="$(awk -v arch="${BUILD_ARCH}:" '$1 == arch {print $2}' "$build_file")"
           ttyd_version="$(awk '$1 == "TTYD_VERSION:" {gsub(/"/, "", $2); print $2}' "$build_file")"
           trzsz_version="$(awk '$1 == "TRZSZ_VERSION:" {gsub(/"/, "", $2); print $2}' "$build_file")"
           codex_version="$(awk '$1 == "CODEX_VERSION:" {gsub(/"/, "", $2); print $2}' "$build_file")"
@@ -51,22 +63,23 @@ jobs:
             echo "codex_version=$codex_version"
           } >> "$GITHUB_OUTPUT"
 
-      - name: Build pinned amd64 add-on image
+      - name: Build pinned ${{ matrix.arch }} add-on image
         run: |
           docker build \
-            --platform linux/amd64 \
+            --platform ${{ matrix.platform }} \
             --build-arg BUILD_FROM=${{ steps.build_config.outputs.build_from }} \
+            --build-arg BUILD_ARCH=${{ matrix.arch }} \
             --build-arg TTYD_VERSION=${{ steps.build_config.outputs.ttyd_version }} \
             --build-arg TRZSZ_VERSION=${{ steps.build_config.outputs.trzsz_version }} \
             --build-arg CODEX_VERSION=${{ steps.build_config.outputs.codex_version }} \
-            --tag ha-codex:pr-${{ github.event.pull_request.number || github.run_id }} \
+            --tag ha-codex:pr-${{ github.event.pull_request.number || github.run_id }}-${{ matrix.arch }} \
             home_assistant_codex_app
 
       - name: Verify runtime dependencies
         env:
           EXPECTED_CODEX_VERSION: ${{ steps.build_config.outputs.codex_version }}
         run: |
-          image="ha-codex:pr-${{ github.event.pull_request.number || github.run_id }}"
+          image="ha-codex:pr-${{ github.event.pull_request.number || github.run_id }}-${{ matrix.arch }}"
           docker run --rm --env EXPECTED_CODEX_VERSION --entrypoint /bin/sh "$image" -ec '
             command -v codex
             test -x /usr/local/bin/codex
@@ -84,7 +97,7 @@ jobs:
 
       - name: Verify image metadata
         run: |
-          image="ha-codex:pr-${{ github.event.pull_request.number || github.run_id }}"
+          image="ha-codex:pr-${{ github.event.pull_request.number || github.run_id }}-${{ matrix.arch }}"
           test "$(docker image inspect "$image" --format '{{.Config.WorkingDir}}')" = "/homeassistant"
           test "$(docker image inspect "$image" --format '{{json .Config.Cmd}}')" = '["/run.sh"]'
           docker image inspect "$image" --format '{{json .Config.Healthcheck.Test}}' |
@@ -92,7 +105,7 @@ jobs:
 
       - name: Verify configured models and healthy add-on startup
         run: |
-          image="ha-codex:pr-${{ github.event.pull_request.number || github.run_id }}"
+          image="ha-codex:pr-${{ github.event.pull_request.number || github.run_id }}-${{ matrix.arch }}"
           options_file="$RUNNER_TEMP/ha-codex-options.json"
           printf '{}\n' > "$options_file"
 
