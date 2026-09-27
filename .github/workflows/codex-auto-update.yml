@@ -65,9 +65,40 @@ jobs:
     name: Validate update
     needs: prepare
     if: needs.prepare.outputs.update == 'true'
-    uses: ./.github/workflows/validate-addon.yml
-    with:
-      ref: ${{ needs.prepare.outputs.sha }}
+    runs-on: ubuntu-24.04
+    # Covers the 20-minute build jobs plus time queued for an Arm runner.
+    timeout-minutes: 60
+    permissions:
+      actions: write
+      contents: read
+
+    steps:
+      - name: Run image validation on the update branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          BRANCH: ${{ needs.prepare.outputs.branch }}
+          SHA: ${{ needs.prepare.outputs.sha }}
+        run: |
+          # A separate run, not a reusable-workflow call, so the checks on SHA
+          # are named as main's ruleset requires. GITHUB_TOKEN may dispatch it.
+          gh workflow run validate-addon.yml --ref "${BRANCH}"
+          run_id=""
+          for attempt in $(seq 1 30); do
+            run_id="$(gh run list --workflow validate-addon.yml --branch "${BRANCH}" \
+              --event workflow_dispatch --commit "${SHA}" --limit 1 \
+              --json databaseId --jq '.[0].databaseId // empty')"
+            if [ -n "${run_id}" ]; then
+              break
+            fi
+            sleep 10
+          done
+          if [ -z "${run_id}" ]; then
+            echo "::error::No image validation run started for ${SHA} on ${BRANCH}."
+            exit 1
+          fi
+          echo "Waiting on ${GITHUB_SERVER_URL}/${GH_REPO}/actions/runs/${run_id}"
+          gh run watch "${run_id}" --interval 30 --exit-status
 
   release:
     name: Release update
