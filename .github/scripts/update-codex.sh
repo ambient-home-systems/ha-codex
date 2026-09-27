@@ -5,7 +5,8 @@
 #
 # A release counts only when it is published (not a draft or prerelease), its
 # tag is a plain rust-vX.Y.Z, and it already has the Linux musl archives the
-# Dockerfile downloads for every supported architecture, since assets can be uploaded after a release appears.
+# Dockerfile downloads for every supported architecture, since assets can be
+# uploaded after a release appears.
 #
 # Writes update=true|false, and on an update codex_version, previous_version,
 # and addon_version, to GITHUB_OUTPUT when it is set.
