@@ -23,7 +23,7 @@ map:
     read_only: false
     path: /config
 options:
-  model: gpt-6-luna
+  model: gpt-6.1-sol
   reasoning_effort: xhigh
   terminal_font_size: 14
   terminal_scrollback: 5000
@@ -37,7 +37,7 @@ options:
   home_assistant_control: false
   allow_home_assistant_restart: false
 schema:
-  model: list(default|gpt-6-astra|gpt-6.1-sol|gpt-6-sol|gpt-6-luna|gpt-5.6-terra|gpt-5.6-sol|gpt-5.6-luna|gpt-5.6|gpt-5.5|gpt-5.3-codex-spark)
+  model: list(default|gpt-6-astra|gpt-6.1-sol|gpt-6-sol|gpt-6-luna|gpt-5.6-terra|gpt-5.6-sol|gpt-5.6-luna|gpt-5.5)
   reasoning_effort: list(default|low|medium|high|xhigh|max|ultra)
   terminal_font_size: int(10,24)
   terminal_scrollback: int(1000,50000)
