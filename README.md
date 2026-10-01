@@ -95,27 +95,30 @@ an issue, screenshot, chat, or repository file.
 
 ## Model choice
 
-HA Codex defaults to **GPT-6 Luna** with **xhigh** reasoning effort. If GPT-6
-Luna is not available on your account, pick another model. The Configuration
+HA Codex defaults to **GPT-6.1 Sol** with **xhigh** reasoning effort. If GPT-6.1
+Sol is not available on your account, pick another model. The Configuration
 tab offers the following model choices:
 
 | Model | Best use |
 | --- | --- |
+| **default** | Keep the model you choose with `/model` in Codex; see below. |
 | **GPT-6 Astra** | The hardest workflows across code, apps, and research. |
-| **GPT-6 Sol** | Complex coding and agentic workflows. |
-| **GPT-6 Luna** (default) | Focused coding and clear, repeatable work. |
-| **GPT-5.6 Terra** | Everyday Home Assistant work; the best balance of quality, speed, and usage. |
-| **GPT-5.6 Sol** | Difficult, ambiguous, high-value work that benefits from more analysis and polish. |
-| **GPT-5.6 Luna** | Clear, repeatable, or high-volume work where speed and lower usage matter. |
-| **GPT-5.6** | The general GPT-5.6 default model alias. |
+| **GPT-6.1 Sol** (default) | The latest Sol: complex coding and everyday work, near Astra at a lower cost. |
+| **GPT-6 Sol** | Previous-generation Sol for complex coding and agentic workflows. |
+| **GPT-6 Luna** | Focused coding and clear, repeatable work. |
+| **GPT-5.6 Terra** | Older balanced model for everyday work; Codex suggests GPT-6 Sol instead. |
+| **GPT-5.6 Sol** | Older Sol for difficult, ambiguous work; Codex suggests GPT-6 Sol instead. |
+| **GPT-5.6 Luna** | Older fast, efficient model; Codex suggests GPT-6 Luna instead. |
 | **GPT-5.5** | Previous-generation model; retires from Codex with ChatGPT sign-in on October 14, 2026. |
-| **GPT-5.3 Codex Spark** | A text-only, real-time coding preview for ChatGPT Pro accounts. |
 
 The Configuration setting starts Codex with `--model` every time the add-on
 starts. It is your durable startup preference. In contrast, `/model` inside
-Codex changes the model of the active session immediately. After changing the
-add-on setting, restart HA Codex; with session persistence on, this also opens
-the matching model-specific terminal session. Availability depends on your
+Codex changes the model of the active session immediately. Codex saves that
+choice, but the Configuration setting replaces it on the next start. To keep
+the model you pick with `/model` instead, set **Model** to `default`; also set
+**Reasoning effort** to `default` to keep the effort you pick there. After
+changing the add-on setting, restart HA Codex; with session persistence on, this
+also opens the matching model-specific terminal session. Availability depends on your
 account, sign-in method, workspace settings, and rollout. Adding a choice here
 does not grant access to it. Check `/model` in an authenticated session for the
 choices available to your account, or see the [official Codex model guidance](https://learn.chatgpt.com/docs/models).
@@ -129,8 +132,8 @@ want before starting HA Codex. Restart the add-on after changing a setting.
 
 | Setting | Default | What it does |
 | --- | --- | --- |
-| **Model** | GPT-6 Luna | The starting model for new Codex sessions. |
-| **Reasoning effort** | xhigh | How hard Codex thinks before answering: `low`, `medium`, `high`, `xhigh`, `max`, or `ultra`. Higher is more thorough but slower and uses more of your plan. `ultra` is available on GPT-6 Astra, GPT-6 Sol, GPT-5.6 Terra, and GPT-5.6 Sol; `max` also on GPT-6 Luna and GPT-5.6 Luna. Other models go up to `xhigh`. A level the selected model does not offer is lowered to its highest one, with a note in the add-on log. `default` uses the model's own setting, or the one you saved in Codex. |
+| **Model** | GPT-6.1 Sol | The starting model for new Codex sessions. `default` keeps the model you choose with `/model` in Codex across restarts. |
+| **Reasoning effort** | xhigh | How hard Codex thinks before answering: `low`, `medium`, `high`, `xhigh`, `max`, or `ultra`. Higher is more thorough but slower and uses more of your plan. `ultra` is available on GPT-6 Astra, GPT-6.1 Sol, GPT-6 Sol, GPT-5.6 Terra, and GPT-5.6 Sol; `max` also on GPT-6 Luna and GPT-5.6 Luna. Other models go up to `xhigh`. A level the selected model does not offer is lowered to its highest one, with a note in the add-on log; with **Model** set to `default`, the model saved in Codex is checked. `default` uses the model's own setting, or the one you saved in Codex. |
 | **Terminal font size** | 14 | Changes the terminal text size (10–24). |
 | **Terminal scrollback** | 5,000 lines | Sets how much past terminal output is retained (1,000–50,000 lines) in both the browser and persistent terminal session, including output produced immediately after startup. 5,000 is a practical balance. |
 | **Terminal theme** | Dark | Selects the terminal color theme. |
