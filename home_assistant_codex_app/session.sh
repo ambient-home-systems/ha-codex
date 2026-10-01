@@ -96,7 +96,11 @@ if [ "${HA_CODEX_MEMORIES:-false}" = "true" ]; then
   CODEX_ARGS+=(--enable memories)
 fi
 
-CODEX_ARGS+=(--model "${MODEL}")
+# "default" passes nothing, so the model saved with /model in config.toml, or
+# Codex's own default, applies. Any other value overrides it for new sessions.
+if [ "${MODEL}" != "default" ]; then
+  CODEX_ARGS+=(--model "${MODEL}")
+fi
 
 # "default" passes nothing, so the model's own default or a model_reasoning_effort
 # saved in config.toml applies. Any other value overrides it for new sessions.

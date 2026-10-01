@@ -2,6 +2,13 @@
 
 All notable changes to HA Codex are documented here.
 
+## 1.2.26
+
+- Added `gpt-6.1-sol` (GPT-6.1 Sol) to the model selector. It is in the built-in model list of the pinned Codex CLI (0.159.1 and later) and supports reasoning effort up to `ultra`. Availability depends on the account, sign-in method, workspace settings, and rollout.
+- Added a `default` choice to the **Model** option. It starts Codex without `--model`, so the model you pick with `/model` (saved in Codex's `config.toml`) is kept across add-on restarts instead of being replaced by the Configuration setting. With no saved model, Codex uses its own default. Set **Reasoning effort** to `default` as well to keep the effort you pick with `/model`; otherwise the reasoning-effort check applies to the saved model.
+- Updated the model documentation: GPT-6 Sol is now the previous-generation Sol, and Codex suggests GPT-6 Sol or GPT-6 Luna in place of the GPT-5.6 models.
+- The default model stays `gpt-6-luna`, and existing installs keep their saved choices.
+
 ## 1.2.25
 
 - Updated the pinned Codex CLI from 0.159.2 to 0.159.3, including the version-matched `codex-code-mode-host` artifact. See the [Codex 0.159.3 release notes](https://github.com/openai/codex/releases/tag/rust-v0.159.3) for what changed.

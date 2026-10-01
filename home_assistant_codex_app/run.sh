@@ -21,14 +21,39 @@ REASONING_EFFORT="$(bashio::config 'reasoning_effort')"
 HOME_ASSISTANT_CONTROL="$(bashio::config 'home_assistant_control')"
 ALLOW_HOME_ASSISTANT_RESTART="$(bashio::config 'allow_home_assistant_restart')"
 
+# "default" passes no --model, so Codex uses the model saved with /model (the
+# top-level model key in config.toml) or its own default. That saved model, when
+# present, is the one the reasoning-effort check below applies to.
+CODEX_CONFIG_FILE="${CODEX_DATA_DIR}/config.toml"
+EFFORT_MODEL="${MODEL}"
+SAVED_MODEL=""
+if [ "${MODEL}" = "default" ]; then
+  if [ -f "${CODEX_CONFIG_FILE}" ]; then
+    SAVED_MODEL="$(awk -v squote="'" '
+      /^[[:space:]]*\[/ { exit }
+      /^[[:space:]]*model[[:space:]]*=/ {
+        sub(/^[^=]*=[[:space:]]*/, "")
+        quote = substr($0, 1, 1)
+        rest = substr($0, 2)
+        end = index(rest, quote)
+        if ((quote == "\"" || quote == squote) && end > 1) print substr(rest, 1, end - 1)
+        exit
+      }
+    ' "${CODEX_CONFIG_FILE}")"
+  fi
+  EFFORT_MODEL="${SAVED_MODEL}"
+fi
+
 # Not every model offers every reasoning effort. The highest level per model
 # follows Codex's model catalog: ultra on Astra, Sol, and Terra, max on the Luna
 # models, and xhigh on the rest. A higher selection is lowered to the model's
 # highest level so the session still starts; lower selections pass unchanged.
+# With "default" and no saved model the model is unknown, so nothing is lowered.
 readonly REASONING_EFFORT_LEVELS="low medium high xhigh max ultra"
-case "${MODEL}" in
-  gpt-6-astra|gpt-6-sol|gpt-5.6-terra|gpt-5.6-sol) MAX_REASONING_EFFORT="ultra" ;;
+case "${EFFORT_MODEL}" in
+  gpt-6-astra|gpt-6.1-sol|gpt-6-sol|gpt-5.6-terra|gpt-5.6-sol) MAX_REASONING_EFFORT="ultra" ;;
   gpt-6-luna|gpt-5.6-luna) MAX_REASONING_EFFORT="max" ;;
+  "") MAX_REASONING_EFFORT="ultra" ;;
   *) MAX_REASONING_EFFORT="xhigh" ;;
 esac
 reasoning_effort_rank() {
@@ -62,7 +87,6 @@ export HA_CODEX_REASONING_EFFORT="${REASONING_EFFORT}"
 # [features] table or as a top-level features.memory_tool dotted key. If the new
 # key is already present the old line is dropped instead, because a duplicate
 # key would make config.toml invalid.
-CODEX_CONFIG_FILE="${CODEX_DATA_DIR}/config.toml"
 if [ -f "${CODEX_CONFIG_FILE}" ] && grep -Eq '^[[:space:]]*(features\.)?memory_tool[[:space:]]*=' "${CODEX_CONFIG_FILE}"; then
   CODEX_CONFIG_MIGRATED="$(mktemp)"
   awk '
@@ -114,8 +138,15 @@ fi
 
 bashio::log.info "Starting HA Codex."
 bashio::log.info "Using Codex model: ${MODEL}."
+if [ "${MODEL}" = "default" ]; then
+  if [ -n "${SAVED_MODEL}" ]; then
+    bashio::log.info "Codex will start with the model saved in Codex: ${SAVED_MODEL}. Change it with /model."
+  else
+    bashio::log.info "No model is saved in Codex yet, so Codex will use its own default. Choose one with /model."
+  fi
+fi
 if [ -n "${REQUESTED_REASONING_EFFORT:-}" ]; then
-  bashio::log.warning "Reasoning effort ${REQUESTED_REASONING_EFFORT} is not available for ${MODEL}; using ${REASONING_EFFORT}, the highest level it supports."
+  bashio::log.warning "Reasoning effort ${REQUESTED_REASONING_EFFORT} is not available for ${EFFORT_MODEL}; using ${REASONING_EFFORT}, the highest level it supports."
 fi
 bashio::log.info "Reasoning effort: ${REASONING_EFFORT}."
 bashio::log.info "Terminal history mode: ${TERMINAL_MODE}."

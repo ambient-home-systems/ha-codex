@@ -123,8 +123,9 @@ jobs:
           default_model="$(awk '$1 == "model:" && $2 !~ /^list\(/ {print $2}' home_assistant_codex_app/config.yaml)"
           test -n "$default_model"
           # Each case is model:selected effort:effort the add-on should use.
+          # "default" has no model saved in Codex here, so nothing is lowered.
           # The last two check that a level the model lacks is lowered.
-          for case in $(printf '%s\n' "$default_model:xhigh:xhigh" gpt-6-astra:ultra:ultra gpt-6-sol:xhigh:xhigh gpt-6-luna:max:max gpt-6-luna:ultra:max gpt-5.5:max:xhigh | awk '!seen[$0]++'); do
+          for case in $(printf '%s\n' "$default_model:xhigh:xhigh" default:ultra:ultra gpt-6-astra:ultra:ultra gpt-6.1-sol:ultra:ultra gpt-6-sol:xhigh:xhigh gpt-6-luna:max:max gpt-6-luna:ultra:max gpt-5.5:max:xhigh | awk '!seen[$0]++'); do
             IFS=: read -r model effort expected_effort <<< "$case"
             grep -E '^  model: list\(' home_assistant_codex_app/config.yaml | grep -F "$model"
             grep -E '^  reasoning_effort: list\(' home_assistant_codex_app/config.yaml | grep -E "[(|]${effort}[|)]"
@@ -148,6 +149,9 @@ jobs:
             logs="$(docker logs ha-codex-runtime-smoke 2>&1)"
             printf '%s\n' "$logs"
             printf '%s\n' "$logs" | grep -F "Using Codex model: ${model}."
+            if [ "$model" = "default" ]; then
+              printf '%s\n' "$logs" | grep -F 'No model is saved in Codex yet, so Codex will use its own default.'
+            fi
             printf '%s\n' "$logs" | grep -F "Reasoning effort: ${expected_effort}."
             if [ "$effort" != "$expected_effort" ]; then
               printf '%s\n' "$logs" | grep -F "Reasoning effort ${effort} is not available for ${model}; using ${expected_effort}"
