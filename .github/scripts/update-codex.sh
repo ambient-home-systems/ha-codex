@@ -24,7 +24,7 @@ if ! [[ "${current}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || ! [[ "${addon_current}" =
   exit 1
 fi
 
-latest="$(gh api 'repos/openai/codex/releases?per_page=50' --jq '
+readonly RELEASES_FILTER='
   .[]
   | select((.draft | not) and (.prerelease | not))
   | select(.tag_name | test("^rust-v[0-9]+\\.[0-9]+\\.[0-9]+$"))
@@ -33,7 +33,21 @@ latest="$(gh api 'repos/openai/codex/releases?per_page=50' --jq '
   | select([.assets[].name] | index("codex-aarch64-unknown-linux-musl.tar.gz"))
   | select([.assets[].name] | index("codex-code-mode-host-aarch64-unknown-linux-musl.tar.gz"))
   | .tag_name | ltrimstr("rust-v")
-' | sort -V | tail -n 1)"
+'
+# The releases listing is large, and GitHub sometimes drops the connection
+# partway through ("stream error: ... CANCEL"). Retry before failing the run.
+readonly RELEASES_ATTEMPTS=4
+for attempt in $(seq 1 "${RELEASES_ATTEMPTS}"); do
+  if latest="$(gh api 'repos/openai/codex/releases?per_page=50' --jq "${RELEASES_FILTER}" | sort -V | tail -n 1)"; then
+    break
+  fi
+  if [ "${attempt}" -eq "${RELEASES_ATTEMPTS}" ]; then
+    echo "::error::Could not list Codex releases after ${RELEASES_ATTEMPTS} attempts."
+    exit 1
+  fi
+  echo "::warning::Listing Codex releases failed (attempt ${attempt} of ${RELEASES_ATTEMPTS}); retrying."
+  sleep "$((attempt * 15))"
+done
 if [ -z "${latest}" ]; then
   echo "::error::Found no stable Codex release with the Linux musl archives."
   exit 1
