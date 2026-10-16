@@ -109,7 +109,6 @@ tab offers the following model choices:
 | **GPT-5.6 Terra** | Older balanced model for everyday work; Codex suggests GPT-6 Sol instead. |
 | **GPT-5.6 Sol** | Older Sol for difficult, ambiguous work; Codex suggests GPT-6 Sol instead. |
 | **GPT-5.6 Luna** | Older fast, efficient model; Codex suggests GPT-6 Luna instead. |
-| **GPT-5.5** | Previous-generation model; retires from Codex with ChatGPT sign-in on October 14, 2026. |
 
 The Configuration setting starts Codex with `--model` every time the add-on
 starts. It is your durable startup preference. In contrast, `/model` inside
@@ -122,8 +121,6 @@ also opens the matching model-specific terminal session. Availability depends on
 account, sign-in method, workspace settings, and rollout. Adding a choice here
 does not grant access to it. Check `/model` in an authenticated session for the
 choices available to your account, or see the [official Codex model guidance](https://learn.chatgpt.com/docs/models).
-GPT-5.5 remains available through the API after its ChatGPT sign-in retirement;
-ChatGPT users should select an available replacement before that date.
 
 ## Add-on settings
 

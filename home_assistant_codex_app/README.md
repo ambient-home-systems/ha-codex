@@ -70,7 +70,7 @@ persists across restarts.
 HA Codex defaults to **GPT-6.1 Sol**, the latest Sol for complex coding and
 everyday work, with **xhigh** reasoning effort. The Configuration tab also
 offers GPT-6 Astra (the hardest workflows), GPT-6 Sol, GPT-6 Luna (fast and
-efficient), GPT-5.6 Terra, GPT-5.6 Sol, GPT-5.6 Luna, and GPT-5.5. If GPT-6.1
+efficient), GPT-5.6 Terra, GPT-5.6 Sol, and GPT-5.6 Luna. If GPT-6.1
 Sol is not available on your account, pick another model.
 
 This setting launches Codex with the selected model every time the add-on
@@ -83,9 +83,6 @@ setting. Availability depends on your account, sign-in method,
 workspace settings, and rollout; adding a choice does not grant access to it.
 Check `/model` in an authenticated session for the choices available to your
 account, or see the [official Codex model guidance](https://learn.chatgpt.com/docs/models).
-GPT-5.5 retires from Codex with ChatGPT sign-in on October 14, 2026, but remains
-available through the API. ChatGPT users should select an available replacement
-before that date.
 
 ## Add-on settings
 
