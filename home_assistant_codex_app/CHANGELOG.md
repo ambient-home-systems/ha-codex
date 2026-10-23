@@ -2,6 +2,11 @@
 
 All notable changes to HA Codex are documented here.
 
+## 1.2.34
+
+- Updated the pinned Codex CLI from 0.163.0 to 0.164.0, including the version-matched `codex-code-mode-host` artifact. See the [Codex 0.164.0 release notes](https://github.com/openai/codex/releases/tag/rust-v0.164.0) for what changed.
+- Released automatically after the amd64 and aarch64 builds and smoke tests passed. Model choices and settings are unchanged.
+
 ## 1.2.33
 
 - Removed `gpt-5.5` from the model selector. Its retirement from Codex with ChatGPT sign-in was scheduled for October 14, 2026. If it is saved in your Configuration tab, choose another model (GPT-6 Sol is Codex's suggested replacement) or `default` before starting HA Codex. API-key users can still choose GPT-5.5 with `/model` and keep it across restarts by setting **Model** to `default`.
