@@ -2,6 +2,11 @@
 
 All notable changes to HA Codex are documented here.
 
+## 1.2.35
+
+- Updated the pinned Codex CLI from 0.164.0 to 0.165.0, including the version-matched `codex-code-mode-host` artifact. See the [Codex 0.165.0 release notes](https://github.com/openai/codex/releases/tag/rust-v0.165.0) for what changed.
+- Released automatically after the amd64 and aarch64 builds and smoke tests passed. Model choices and settings are unchanged.
+
 ## 1.2.34
 
 - Updated the pinned Codex CLI from 0.163.0 to 0.164.0, including the version-matched `codex-code-mode-host` artifact. See the [Codex 0.164.0 release notes](https://github.com/openai/codex/releases/tag/rust-v0.164.0) for what changed.
