@@ -105,6 +105,7 @@ tab offers the following model choices:
 | **GPT-6 Astra** | The hardest workflows across code, apps, and research. |
 | **GPT-6.1 Sol** (default) | The latest Sol: complex coding and everyday work, near Astra at a lower cost. |
 | **GPT-6 Sol** | Previous-generation Sol for complex coding and agentic workflows. |
+| **GPT-6.1 Terra** | Fast, efficient model for clear writing, visual understanding, and computer use. |
 | **GPT-6 Luna** | Focused coding and clear, repeatable work. |
 | **GPT-5.6 Terra** | Older balanced model for everyday work; Codex suggests GPT-6 Sol instead. |
 | **GPT-5.6 Sol** | Older Sol for difficult, ambiguous work; Codex suggests GPT-6 Sol instead. |
@@ -130,7 +131,7 @@ want before starting HA Codex. Restart the add-on after changing a setting.
 | Setting | Default | What it does |
 | --- | --- | --- |
 | **Model** | GPT-6.1 Sol | The starting model for new Codex sessions. `default` keeps the model you choose with `/model` in Codex across restarts. |
-| **Reasoning effort** | xhigh | How hard Codex thinks before answering: `low`, `medium`, `high`, `xhigh`, `max`, or `ultra`. Higher is more thorough but slower and uses more of your plan. `ultra` is available on GPT-6 Astra, GPT-6.1 Sol, GPT-6 Sol, GPT-5.6 Terra, and GPT-5.6 Sol; `max` also on GPT-6 Luna and GPT-5.6 Luna. Other models go up to `xhigh`. A level the selected model does not offer is lowered to its highest one, with a note in the add-on log; with **Model** set to `default`, the model saved in Codex is checked. `default` uses the model's own setting, or the one you saved in Codex. |
+| **Reasoning effort** | xhigh | How hard Codex thinks before answering: `low`, `medium`, `high`, `xhigh`, `max`, or `ultra`. Higher is more thorough but slower and uses more of your plan. `ultra` is available on GPT-6 Astra, GPT-6.1 Sol, GPT-6 Sol, GPT-6.1 Terra, GPT-5.6 Terra, and GPT-5.6 Sol; `max` also on GPT-6 Luna and GPT-5.6 Luna. Other models go up to `xhigh`. A level the selected model does not offer is lowered to its highest one, with a note in the add-on log; with **Model** set to `default`, the model saved in Codex is checked. `default` uses the model's own setting, or the one you saved in Codex. |
 | **Terminal font size** | 14 | Changes the terminal text size (10–24). |
 | **Terminal scrollback** | 5,000 lines | Sets how much past terminal output is retained (1,000–50,000 lines) in both the browser and persistent terminal session, including output produced immediately after startup. 5,000 is a practical balance. |
 | **Terminal theme** | Dark | Selects the terminal color theme. |
@@ -298,7 +299,7 @@ version-bump commit and uses that version's changelog section as the notes.
 
 Codex CLI updates are released automatically. Every 6 hours the **Update
 Codex CLI** workflow checks for a newer stable Codex CLI release. When one
-exists, it pins that version in `build.yaml`, bumps the add-on's patch version,
+exists, it pins that version in the add-on's `Dockerfile`, bumps its patch version,
 adds a changelog entry, and runs the amd64 and aarch64 builds and smoke tests on a
 `codex-update/<version>` branch. The tests run as a separate **HA Codex image
 validation** run, so the commit carries the `Build and smoke-test amd64 add-on`

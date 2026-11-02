@@ -2,6 +2,11 @@
 
 All notable changes to HA Codex are documented here.
 
+## 1.2.37
+
+- Added `gpt-6.1-terra` (GPT-6.1 Terra) to the model selector. It has been in the built-in model list of the pinned Codex CLI since 0.165.0, and OpenAI describes it as a fast, efficient model for clear writing, visual understanding, and computer use. It supports reasoning effort up to `ultra`. Availability depends on the account, sign-in method, workspace settings, and rollout.
+- Moved the build settings from `build.yaml` into the `Dockerfile`. Home Assistant retired `build.yaml` in April 2026, and Supervisor logged a deprecation warning every time it built HA Codex; a future Supervisor release will stop reading the file. The image is still built on Alpine 3.23, now through Home Assistant's multi-arch `ghcr.io/home-assistant/base:3.23` image, and the ttyd, trzsz, and Codex CLI versions are unchanged. Settings are unchanged.
+
 ## 1.2.36
 
 - Updated the pinned Codex CLI from 0.165.0 to 0.166.0, including the version-matched `codex-code-mode-host` artifact. See the [Codex 0.166.0 release notes](https://github.com/openai/codex/releases/tag/rust-v0.166.0) for what changed.

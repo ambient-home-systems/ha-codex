@@ -1,10 +1,18 @@
-ARG BUILD_FROM
+# Build settings live in this file rather than build.yaml, which Home Assistant
+# retired in April 2026 (Supervisor logs a deprecation warning when it finds
+# one). The base image is Home Assistant's multi-arch manifest, so this one
+# FROM serves both amd64 and aarch64.
+ARG BUILD_FROM=ghcr.io/home-assistant/base:3.23
 FROM ${BUILD_FROM}
 
+# Supervisor passes BUILD_ARCH. BuildKit sets TARGETARCH, which lets a plain
+# local "docker build" work without extra arguments.
 ARG BUILD_ARCH
-ARG TTYD_VERSION
-ARG TRZSZ_VERSION
-ARG CODEX_VERSION
+ARG TARGETARCH
+# Pinned versions. The Codex auto-update workflow bumps CODEX_VERSION.
+ARG TTYD_VERSION="1.7.7"
+ARG TRZSZ_VERSION="1.2.0"
+ARG CODEX_VERSION="0.166.0"
 
 ENV LANG=C.UTF-8 \
     LC_ALL=C.UTF-8 \
@@ -17,12 +25,13 @@ ENV LANG=C.UTF-8 \
 # bundled client turns them into a browser file picker so files can be attached
 # to (and downloaded from) the terminal.
 #
-# BUILD_ARCH is the Home Assistant architecture name. Each upstream spells the
-# CPU architecture differently in its release assets, so it is mapped per project.
-RUN case "${BUILD_ARCH}" in \
+# BUILD_ARCH is the Home Assistant architecture name (amd64, aarch64); BuildKit's
+# TARGETARCH spells Arm as arm64. Each upstream spells the CPU architecture
+# differently in its release assets, so it is mapped per project.
+RUN case "${BUILD_ARCH:-${TARGETARCH}}" in \
       amd64) TTYD_ARCH=x86_64; TRZSZ_ARCH=x86_64; CODEX_TARGET=x86_64-unknown-linux-musl ;; \
-      aarch64) TTYD_ARCH=aarch64; TRZSZ_ARCH=aarch64; CODEX_TARGET=aarch64-unknown-linux-musl ;; \
-      *) echo "Unsupported BUILD_ARCH: ${BUILD_ARCH}" >&2; exit 1 ;; \
+      aarch64|arm64) TTYD_ARCH=aarch64; TRZSZ_ARCH=aarch64; CODEX_TARGET=aarch64-unknown-linux-musl ;; \
+      *) echo "Unsupported architecture: BUILD_ARCH='${BUILD_ARCH}' TARGETARCH='${TARGETARCH}'" >&2; exit 1 ;; \
     esac \
   && apk add --no-cache \
       bash \

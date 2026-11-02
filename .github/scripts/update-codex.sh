@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Check for a newer stable Codex CLI release and, when one exists, update the
-# add-on to it: the CODEX_VERSION pin in build.yaml, a patch bump of the add-on
+# add-on to it: the CODEX_VERSION pin in the Dockerfile, a patch bump of the add-on
 # version in config.yaml, and a new CHANGELOG section. Nothing is committed here.
 #
 # A release counts only when it is published (not a draft or prerelease), its
@@ -12,15 +12,15 @@
 # and addon_version, to GITHUB_OUTPUT when it is set.
 set -euo pipefail
 
-readonly BUILD="home_assistant_codex_app/build.yaml"
+readonly DOCKERFILE="home_assistant_codex_app/Dockerfile"
 readonly CONFIG="home_assistant_codex_app/config.yaml"
 readonly CHANGELOG="home_assistant_codex_app/CHANGELOG.md"
 readonly OUTPUT="${GITHUB_OUTPUT:-/dev/null}"
 
-current="$(sed -n 's/^  CODEX_VERSION: "\(.*\)"$/\1/p' "${BUILD}")"
+current="$(sed -n 's/^ARG CODEX_VERSION="\(.*\)"$/\1/p' "${DOCKERFILE}")"
 addon_current="$(sed -n 's/^version: "\(.*\)"$/\1/p' "${CONFIG}")"
 if ! [[ "${current}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || ! [[ "${addon_current}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-  echo "::error::Could not read CODEX_VERSION from ${BUILD} or version from ${CONFIG}."
+  echo "::error::Could not read CODEX_VERSION from ${DOCKERFILE} or version from ${CONFIG}."
   exit 1
 fi
 
@@ -63,7 +63,7 @@ fi
 IFS=. read -r major minor patch <<< "${addon_current}"
 addon_next="${major}.${minor}.$((patch + 1))"
 
-sed -i "s/^  CODEX_VERSION: \"${current}\"$/  CODEX_VERSION: \"${latest}\"/" "${BUILD}"
+sed -i "s/^ARG CODEX_VERSION=\"${current}\"$/ARG CODEX_VERSION=\"${latest}\"/" "${DOCKERFILE}"
 sed -i "s/^version: \"${addon_current}\"$/version: \"${addon_next}\"/" "${CONFIG}"
 
 entry="$(cat <<EOF
@@ -81,7 +81,7 @@ ENTRY="${entry}" awk '
 cat "${changelog_updated}" > "${CHANGELOG}"
 rm -f "${changelog_updated}"
 
-if ! grep -qx "  CODEX_VERSION: \"${latest}\"" "${BUILD}" \
+if ! grep -qx "ARG CODEX_VERSION=\"${latest}\"" "${DOCKERFILE}" \
   || ! grep -qx "version: \"${addon_next}\"" "${CONFIG}" \
   || ! grep -qx "## ${addon_next}" "${CHANGELOG}"; then
   echo "::error::Failed to apply the Codex ${latest} update."
