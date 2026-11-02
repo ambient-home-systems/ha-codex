@@ -2,6 +2,10 @@
 
 All notable changes to HA Codex are documented here.
 
+## 1.2.37
+
+- Added `gpt-6.1-terra` (GPT-6.1 Terra) to the model selector. It has been in the built-in model list of the pinned Codex CLI since 0.165.0, and OpenAI describes it as a fast, efficient model for clear writing, visual understanding, and computer use. It supports reasoning effort up to `ultra`. Availability depends on the account, sign-in method, workspace settings, and rollout.
+
 ## 1.2.36
 
 - Updated the pinned Codex CLI from 0.165.0 to 0.166.0, including the version-matched `codex-code-mode-host` artifact. See the [Codex 0.166.0 release notes](https://github.com/openai/codex/releases/tag/rust-v0.166.0) for what changed.

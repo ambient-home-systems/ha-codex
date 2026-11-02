@@ -69,8 +69,9 @@ persists across restarts.
 
 HA Codex defaults to **GPT-6.1 Sol**, the latest Sol for complex coding and
 everyday work, with **xhigh** reasoning effort. The Configuration tab also
-offers GPT-6 Astra (the hardest workflows), GPT-6 Sol, GPT-6 Luna (fast and
-efficient), GPT-5.6 Terra, GPT-5.6 Sol, and GPT-5.6 Luna. If GPT-6.1
+offers GPT-6 Astra (the hardest workflows), GPT-6 Sol, GPT-6.1 Terra (fast,
+efficient writing, visual understanding, and computer use), GPT-6 Luna (fast
+and efficient), GPT-5.6 Terra, GPT-5.6 Sol, and GPT-5.6 Luna. If GPT-6.1
 Sol is not available on your account, pick another model.
 
 This setting launches Codex with the selected model every time the add-on
@@ -93,7 +94,7 @@ Codex.
 | Setting | Default | What it does |
 | --- | --- | --- |
 | **Model** | GPT-6.1 Sol | The starting model for new Codex sessions. `default` keeps the model you choose with `/model` in Codex across restarts. |
-| **Reasoning effort** | xhigh | How hard Codex thinks before answering: `low`, `medium`, `high`, `xhigh`, `max`, or `ultra`. Higher is more thorough but slower and uses more of your plan. `ultra` is available on GPT-6 Astra, GPT-6.1 Sol, GPT-6 Sol, GPT-5.6 Terra, and GPT-5.6 Sol; `max` also on GPT-6 Luna and GPT-5.6 Luna. Other models go up to `xhigh`. A level the selected model does not offer is lowered to its highest one, with a note in the add-on log; with **Model** set to `default`, the model saved in Codex is checked. `default` uses the model's own setting, or the one you saved in Codex. |
+| **Reasoning effort** | xhigh | How hard Codex thinks before answering: `low`, `medium`, `high`, `xhigh`, `max`, or `ultra`. Higher is more thorough but slower and uses more of your plan. `ultra` is available on GPT-6 Astra, GPT-6.1 Sol, GPT-6 Sol, GPT-6.1 Terra, GPT-5.6 Terra, and GPT-5.6 Sol; `max` also on GPT-6 Luna and GPT-5.6 Luna. Other models go up to `xhigh`. A level the selected model does not offer is lowered to its highest one, with a note in the add-on log; with **Model** set to `default`, the model saved in Codex is checked. `default` uses the model's own setting, or the one you saved in Codex. |
 | **Terminal font size** | 14 | Sets terminal text size (10–24). |
 | **Terminal scrollback** | 5,000 lines | Keeps 1,000–50,000 lines of past terminal output in both the browser and persistent terminal session, including output produced immediately after startup. |
 | **Terminal theme** | Dark | Sets the terminal color theme. |

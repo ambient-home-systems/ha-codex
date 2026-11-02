@@ -51,7 +51,7 @@ fi
 # With "default" and no saved model the model is unknown, so nothing is lowered.
 readonly REASONING_EFFORT_LEVELS="low medium high xhigh max ultra"
 case "${EFFORT_MODEL}" in
-  gpt-6-astra|gpt-6.1-sol|gpt-6-sol|gpt-5.6-terra|gpt-5.6-sol) MAX_REASONING_EFFORT="ultra" ;;
+  gpt-6-astra|gpt-6.1-sol|gpt-6-sol|gpt-6.1-terra|gpt-5.6-terra|gpt-5.6-sol) MAX_REASONING_EFFORT="ultra" ;;
   gpt-6-luna|gpt-5.6-luna) MAX_REASONING_EFFORT="max" ;;
   "") MAX_REASONING_EFFORT="ultra" ;;
   *) MAX_REASONING_EFFORT="xhigh" ;;
