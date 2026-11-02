@@ -36,35 +36,33 @@ jobs:
 
       - name: Read pinned build configuration
         id: build_config
-        env:
-          BUILD_ARCH: ${{ matrix.arch }}
         run: |
-          build_file="home_assistant_codex_app/build.yaml"
-          build_from="$(awk -v arch="${BUILD_ARCH}:" '$1 == arch {print $2}' "$build_file")"
-          ttyd_version="$(awk '$1 == "TTYD_VERSION:" {gsub(/"/, "", $2); print $2}' "$build_file")"
-          trzsz_version="$(awk '$1 == "TRZSZ_VERSION:" {gsub(/"/, "", $2); print $2}' "$build_file")"
-          codex_version="$(awk '$1 == "CODEX_VERSION:" {gsub(/"/, "", $2); print $2}' "$build_file")"
-
-          for value in "$build_from" "$ttyd_version" "$trzsz_version" "$codex_version"; do
-            test -n "$value"
+          app_dir="home_assistant_codex_app"
+          # Home Assistant retired build.yaml; Supervisor warns when it finds one.
+          if [ -e "$app_dir/build.yaml" ]; then
+            echo "::error::$app_dir/build.yaml is deprecated. Keep build settings in the Dockerfile."
+            exit 1
+          fi
+          # Every pin is an ARG default in the Dockerfile.
+          for arg in BUILD_FROM TTYD_VERSION TRZSZ_VERSION CODEX_VERSION; do
+            grep -Eq "^ARG ${arg}=\"?[^\"]+\"?$" "$app_dir/Dockerfile"
           done
+          codex_version="$(sed -n 's/^ARG CODEX_VERSION="\(.*\)"$/\1/p' "$app_dir/Dockerfile")"
+          test -n "$codex_version"
+          echo "codex_version=$codex_version" >> "$GITHUB_OUTPUT"
 
-          {
-            echo "build_from=$build_from"
-            echo "ttyd_version=$ttyd_version"
-            echo "trzsz_version=$trzsz_version"
-            echo "codex_version=$codex_version"
-          } >> "$GITHUB_OUTPUT"
-
+      # Build as Supervisor does: BuildKit for the target platform, passing only
+      # BUILD_ARCH and BUILD_VERSION, so the Dockerfile's own defaults are tested.
       - name: Build pinned ${{ matrix.arch }} add-on image
         run: |
-          docker build \
+          addon_version="$(sed -n 's/^version: "\(.*\)"$/\1/p' home_assistant_codex_app/config.yaml)"
+          test -n "$addon_version"
+          docker buildx build \
+            --load \
+            --pull \
             --platform ${{ matrix.platform }} \
-            --build-arg BUILD_FROM=${{ steps.build_config.outputs.build_from }} \
             --build-arg BUILD_ARCH=${{ matrix.arch }} \
-            --build-arg TTYD_VERSION=${{ steps.build_config.outputs.ttyd_version }} \
-            --build-arg TRZSZ_VERSION=${{ steps.build_config.outputs.trzsz_version }} \
-            --build-arg CODEX_VERSION=${{ steps.build_config.outputs.codex_version }} \
+            --build-arg BUILD_VERSION="$addon_version" \
             --tag ha-codex:pr-${{ github.event.pull_request.number || github.run_id }}-${{ matrix.arch }} \
             home_assistant_codex_app
 

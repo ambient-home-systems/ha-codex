@@ -299,7 +299,7 @@ version-bump commit and uses that version's changelog section as the notes.
 
 Codex CLI updates are released automatically. Every 6 hours the **Update
 Codex CLI** workflow checks for a newer stable Codex CLI release. When one
-exists, it pins that version in `build.yaml`, bumps the add-on's patch version,
+exists, it pins that version in the add-on's `Dockerfile`, bumps its patch version,
 adds a changelog entry, and runs the amd64 and aarch64 builds and smoke tests on a
 `codex-update/<version>` branch. The tests run as a separate **HA Codex image
 validation** run, so the commit carries the `Build and smoke-test amd64 add-on`
