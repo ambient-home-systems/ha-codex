@@ -2,7 +2,7 @@
 # retired in April 2026 (Supervisor logs a deprecation warning when it finds
 # one). The base image is Home Assistant's multi-arch manifest, so this one
 # FROM serves both amd64 and aarch64.
-ARG BUILD_FROM=ghcr.io/home-assistant/base:3.23
+ARG BUILD_FROM=ghcr.io/home-assistant/base:3.24
 FROM ${BUILD_FROM}
 
 # Supervisor passes BUILD_ARCH. BuildKit sets TARGETARCH, which lets a plain
