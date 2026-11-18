@@ -2,6 +2,11 @@
 
 All notable changes to HA Codex are documented here.
 
+## 1.2.44
+
+- Updated the pinned Codex CLI from 0.169.0 to 0.170.0, including the version-matched `codex-code-mode-host` artifact. See the [Codex 0.170.0 release notes](https://github.com/openai/codex/releases/tag/rust-v0.170.0) for what changed.
+- Released automatically after the amd64 and aarch64 builds and smoke tests passed. Model choices and settings are unchanged.
+
 ## 1.2.43
 
 - Updated the add-on base image from Alpine 3.23 to 3.24 (`ghcr.io/home-assistant/base:3.24`). Node.js stays at 24.22.3; bash, git, gzip, and tmux move to their Alpine 3.24 versions. The Codex CLI, ttyd, and trzsz versions are unchanged.
