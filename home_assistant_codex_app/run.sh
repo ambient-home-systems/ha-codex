@@ -124,7 +124,8 @@ fi
 
 # This name must stay independent of login-menu revisions so a sign-in change
 # never replaces a user's persistent terminal session.
-readonly SESSION_NAME="home-assistant-codex-${MODEL}-${TERMINAL_MODE}-device-code-v2"
+# A dot in a tmux target separates the window from the pane.
+readonly SESSION_NAME="home-assistant-codex-${MODEL//./_}-${TERMINAL_MODE}-device-code-v2"
 TTYD_INDEX_ARGS=()
 
 if [ "${PERSIST}" = "true" ]; then
